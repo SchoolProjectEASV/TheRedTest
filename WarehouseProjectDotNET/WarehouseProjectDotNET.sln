@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34622.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WarehouseProject", "WarehouseProject\WarehouseProject.csproj", "{C2D428D8-BEAF-4740-81A9-CF18DDCD259C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gherkin.XUnit", "Gherkin.XUnit\Gherkin.XUnit.csproj", "{0BF80399-ABCB-43F6-9B14-C27B4C20F598}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2D428D8-BEAF-4740-81A9-CF18DDCD259C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2D428D8-BEAF-4740-81A9-CF18DDCD259C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2D428D8-BEAF-4740-81A9-CF18DDCD259C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2D428D8-BEAF-4740-81A9-CF18DDCD259C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BF80399-ABCB-43F6-9B14-C27B4C20F598}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BF80399-ABCB-43F6-9B14-C27B4C20F598}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BF80399-ABCB-43F6-9B14-C27B4C20F598}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BF80399-ABCB-43F6-9B14-C27B4C20F598}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C2D9B9A4-A8AA-4F31-904F-FD1F04D15E43}
+	EndGlobalSection
+EndGlobal
