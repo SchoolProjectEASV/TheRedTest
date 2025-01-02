@@ -2,7 +2,6 @@ package warehouse
 
 import (
 	"errors"
-	"fmt"
 	"time"
 )
 
@@ -10,9 +9,28 @@ type WarehouseStorageService struct {
 	Warehouses []Warehouse
 }
 
-func (s WarehouseStorageService) FindAvailableWarehouse(startDate, endDate time.Time, requiredHeight, requiredWidth, requiredLength float64) (int, error) {
-	if startDate.Before(time.Now()) || startDate.After(endDate) {
-		return -1, errors.New("start date cannot be in the past or later than end date")
+// -------------------------------------------------
+// FindAvailableWarehouse
+// -------------------------------------------------
+func (s WarehouseStorageService) FindAvailableWarehouse(
+	startDate, endDate time.Time,
+	requiredHeight, requiredWidth, requiredLength float64,
+) (int, error) {
+
+	if len(s.Warehouses) == 0 {
+		return -1, errors.New("no warehouses available")
+	}
+
+	if requiredHeight <= 0 || requiredWidth <= 0 || requiredLength <= 0 {
+		return -1, errors.New("the 3D model has invalid dimensions (zero or negative)")
+	}
+
+	if startDate.After(endDate) {
+		return -1, errors.New("start date cannot be later than end date")
+	}
+
+	if startDate.Before(time.Now()) {
+		return -1, errors.New("start date cannot be in the past")
 	}
 
 	requiredVolume := requiredHeight * requiredWidth * requiredLength
@@ -25,7 +43,7 @@ func (s WarehouseStorageService) FindAvailableWarehouse(startDate, endDate time.
 			occupiedVolume := warehouse.GetVolumeOccupiedOnDay(day)
 			if occupiedVolume+requiredVolume > warehouseVolume {
 				canAccommodate = false
-				break
+				return -1, errors.New("required volume cannot be accommodated within the specified dates")
 			}
 		}
 
@@ -37,9 +55,19 @@ func (s WarehouseStorageService) FindAvailableWarehouse(startDate, endDate time.
 	return -1, nil
 }
 
-func (service *WarehouseStorageService) GetFullyUtilizedDates(startDate, endDate time.Time) ([]time.Time, error) {
+// -------------------------------------------------
+// GetFullyUtilizedDates
+// -------------------------------------------------
+func (service *WarehouseStorageService) GetFullyUtilizedDates(
+	startDate, endDate time.Time,
+) ([]time.Time, error) {
+
+	if len(service.Warehouses) == 0 {
+		return nil, errors.New("no warehouses available")
+	}
+
 	if startDate.After(endDate) {
-		return nil, fmt.Errorf("the start date cannot be later than the end date")
+		return nil, errors.New("the start date cannot be later than the end date")
 	}
 
 	var fullyUtilizedDates []time.Time
@@ -62,9 +90,19 @@ func (service *WarehouseStorageService) GetFullyUtilizedDates(startDate, endDate
 	return fullyUtilizedDates, nil
 }
 
-func (service *WarehouseStorageService) CalculateAvailableCapacity(startDate, endDate time.Time) (map[time.Time]float64, error) {
+// -------------------------------------------------
+// CalculateAvailableCapacity
+// -------------------------------------------------
+func (service *WarehouseStorageService) CalculateAvailableCapacity(
+	startDate, endDate time.Time,
+) (map[time.Time]float64, error) {
+
+	if len(service.Warehouses) == 0 {
+		return nil, errors.New("no warehouses available")
+	}
+
 	if startDate.After(endDate) {
-		return nil, fmt.Errorf("the start date cannot be later than the end date")
+		return nil, errors.New("the start date cannot be later than the end date")
 	}
 
 	totalCapacity := 0.0
@@ -85,13 +123,19 @@ func (service *WarehouseStorageService) CalculateAvailableCapacity(startDate, en
 	return capacityMap, nil
 }
 
-func (service *WarehouseStorageService) GetLeastUsedWarehouse(startDate, endDate time.Time) (int, error) {
-	if startDate.After(endDate) {
-		return -1, fmt.Errorf("the start date cannot be later than the end date")
-	}
+// -------------------------------------------------
+// GetLeastUsedWarehouse
+// -------------------------------------------------
+func (service *WarehouseStorageService) GetLeastUsedWarehouse(
+	startDate, endDate time.Time,
+) (int, error) {
 
 	if len(service.Warehouses) == 0 {
-		return -1, nil
+		return -1, errors.New("no warehouses available")
+	}
+
+	if startDate.After(endDate) {
+		return -1, errors.New("the start date cannot be later than the end date")
 	}
 
 	usageMap := make(map[int]float64)

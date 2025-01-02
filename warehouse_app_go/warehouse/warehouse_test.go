@@ -16,7 +16,6 @@ var (
 	searchResult int
 	searchError  error
 
-	// Use "pretty" formatter + color, search for ../features folder
 	opts = godog.Options{
 		Output: colors.Colored(os.Stdout),
 		Format: "pretty",
@@ -25,7 +24,6 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	// Run Godog test suite
 	status := godog.TestSuite{
 		Name:                 "warehouse",
 		TestSuiteInitializer: InitializeTestSuite,
@@ -33,7 +31,6 @@ func TestMain(m *testing.M) {
 		Options:              &opts,
 	}.Run()
 
-	// Run any other standard Go tests (if present)
 	if st := m.Run(); st > status {
 		status = st
 	}
@@ -41,7 +38,6 @@ func TestMain(m *testing.M) {
 }
 
 func InitializeTestSuite(ctx *godog.TestSuiteContext) {
-	// Perform any global setup, if necessary
 }
 
 func InitializeScenario(ctx *godog.ScenarioContext) {
@@ -79,7 +75,6 @@ func theFollowingWarehousesExist(ctx context.Context, table *godog.Table) (conte
 }
 
 func theFollowingItemsExistInWarehouse(ctx context.Context, warehouseID int, table *godog.Table) (context.Context, error) {
-	// We'll parse StartDate and EndDate with a custom layout
 	const dateLayout = "2006-01-02T15:04:05"
 
 	for _, row := range table.Rows[1:] {
@@ -105,7 +100,6 @@ func theFollowingItemsExistInWarehouse(ctx context.Context, warehouseID int, tab
 			return ctx, fmt.Errorf("failed to parse StartDate %q: %w", row.Cells[5].Value, parseErr)
 		}
 
-		// Parse the EndDate
 		if item.EndDate, parseErr = time.Parse(dateLayout, row.Cells[6].Value); parseErr != nil {
 			return ctx, fmt.Errorf("failed to parse EndDate %q: %w", row.Cells[6].Value, parseErr)
 		}
@@ -114,7 +108,6 @@ func theFollowingItemsExistInWarehouse(ctx context.Context, warehouseID int, tab
 			return ctx, err
 		}
 
-		// Attach the item to the specified warehouse
 		for i, w := range service.Warehouses {
 			if w.Id == warehouseID {
 				service.Warehouses[i].Items = append(service.Warehouses[i].Items, item)
@@ -126,8 +119,6 @@ func theFollowingItemsExistInWarehouse(ctx context.Context, warehouseID int, tab
 }
 
 func iSearchForAnAvailableWarehouse(ctx context.Context, startDate, endDate string, height, width, length int) (context.Context, error) {
-	// The Gherkin scenario uses e.g. "2024-12-26" (no time-of-day).
-	// So we'll parse with "2006-01-02" for these two fields.
 	start, err := time.Parse("2006-01-02", startDate)
 	if err != nil {
 		return ctx, err
