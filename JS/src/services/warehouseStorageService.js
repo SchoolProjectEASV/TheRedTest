@@ -1,3 +1,5 @@
+const WarehouseExtensions = require('../utils/warehouseExtensions');
+
 class WarehouseStorageService {
     constructor(warehouses) {
         this.warehouses = warehouses;
@@ -28,11 +30,12 @@ class WarehouseStorageService {
             let canAccommodate = true;
 
             for (let day = new Date(startDate); day <= endDate; day.setDate(day.getDate() + 1)) {
-                const occupiedVolume = warehouse.getVolumeOccupiedOnDay(day);
-                if (occupiedVolume + requiredVolume > warehouseVolume) {
-                    canAccommodate = false;
-                    throw new Error("Required volume cannot be accommodated within the specified dates");
-                }
+                const currentDate = new Date(day).toISOString().split('T')[0];
+                const totalVolumeForDay = this.warehouses.reduce((sum, warehouse) =>
+                    sum + warehouse.getVolumeOccupiedOnDay(day), 0
+                );
+            
+                capacityMap[currentDate] = totalCapacity - totalVolumeForDay;
             }
 
             if (canAccommodate) {
@@ -74,21 +77,30 @@ class WarehouseStorageService {
         if (this.warehouses.length === 0) {
             throw new Error("No warehouses available");
         }
-
+    
         if (startDate > endDate) {
             throw new Error("The start date cannot be later than the end date");
         }
-
-        const totalCapacity = this.warehouses.reduce((sum, warehouse) => sum + warehouse.getWarehouseVolume(), 0);
+    
+        const totalCapacity = this.warehouses.reduce((sum, warehouse) =>
+            sum + WarehouseExtensions.getWarehouseVolume(warehouse), 0
+        );
+    
         const capacityMap = {};
-
-        for (let day = new Date(startDate); day <= endDate; day = new Date(day.setDate(day.getDate() + 1))) {
+    
+        console.log('Start Date:', startDate);
+        console.log('End Date:', endDate);
+        
+        for (let day = new Date(startDate); day <= endDate; day.setDate(day.getDate() + 1)) {
+            const currentDate = new Date(day).toISOString().split('T')[0];
             const totalVolumeForDay = this.warehouses.reduce((sum, warehouse) =>
-                sum + warehouse.getVolumeOccupiedOnDay(day), 0
+                sum + WarehouseExtensions.getVolumeOccupiedOnDay(warehouse, day), 0
             );
-
-            capacityMap[day.toISOString().split('T')[0]] = totalCapacity - totalVolumeForDay;
+        
+            console.log(`Date: ${currentDate}, Total Volume: ${totalVolumeForDay}`);
+            capacityMap[currentDate] = totalCapacity - totalVolumeForDay;
         }
+        console.log('Final Capacity Map:', capacityMap);
 
         return capacityMap;
     }

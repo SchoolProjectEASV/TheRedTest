@@ -59,13 +59,17 @@ Then('the available capacities should be:', function (dataTable) {
         capacity: parseFloat(row['Capacity']),
     }));
 
-    const transformedResult = Object.entries(result).map(([date, capacity]) => ({
-        date,
-        capacity,
+    const transformedResult = Object.entries(result || {}).map(([date, capacity]) => ({
+        date: date,
+        capacity: capacity,
     }));
+
+    console.log('Expected:', expected);
+    console.log('Actual:', transformedResult);
 
     assert.deepStrictEqual(transformedResult, expected);
 });
+
 
 
 Then('an error should be returned with message {string}', function (expectedMessage) {
