@@ -8,6 +8,10 @@ class WarehouseStorageService {
             throw new Error("The start date cannot be in the past or later than the end date");
         }
 
+        if (requiredHeight <= 0 || requiredWidth <= 0 || requiredLength <= 0) {
+            throw new Error("The 3D model has invalid dimensions (zero or negative)");
+        }
+
         const requiredVolume = requiredHeight * requiredWidth * requiredLength;
 
         for (const warehouse of this.warehouses) {
@@ -28,13 +32,22 @@ class WarehouseStorageService {
         return -1;
     }
 
+
     getFullyUtilizedDates(startDate, endDate) {
-        if (startDate > endDate) {
+        if (startDate.getTime() > endDate.getTime()) {
             throw new Error("The start date cannot be later than the end date");
+        }
+
+        if (this.warehouses.length === 0) {
+            throw new Error("No warehouses available");
         }
 
         const totalCapacity = this.warehouses.reduce((sum, warehouse) =>
             sum + WarehouseExtensions.getWarehouseVolume(warehouse), 0);
+
+        if (totalCapacity <= 0) {
+            throw new Error("Invalid warehouse configuration: total capacity cannot be zero or negative");
+        }
 
         const allItems = this.warehouses.flatMap(warehouse => warehouse.items.filter(item => item.isActive));
         const fullyUtilizedDates = [];
@@ -52,7 +65,7 @@ class WarehouseStorageService {
         return fullyUtilizedDates;
     }
 
-    // Calculate available capacity
+
     calculateAvailableCapacity(startDate, endDate) {
         if (startDate > endDate) {
             throw new Error("The start date cannot be later than the end date");
@@ -62,18 +75,21 @@ class WarehouseStorageService {
             sum + WarehouseExtensions.getWarehouseVolume(warehouse), 0);
 
         const allItems = this.warehouses.flatMap(warehouse => warehouse.items.filter(item => item.isActive));
-        const capacityMap = {};
+        const capacityList = [];
 
-        for (let day = new Date(startDate); day <= endDate; day.setDate(day.getDate() + 1)) {
+        for (let day = new Date(startDate); day <= endDate; day = new Date(day.getTime() + 86400000)) {
             const totalVolumeForDay = allItems
                 .filter(item => day >= item.startDate && day <= item.endDate)
                 .reduce((sum, item) => sum + WarehouseExtensions.getItemVolume(item), 0);
 
-            capacityMap[new Date(day)] = totalCapacity - totalVolumeForDay;
+            const availableCapacity = totalCapacity - totalVolumeForDay;
+            const dateString = day.toISOString().split('T')[0];
+            capacityList.push({ date: dateString, capacity: availableCapacity });
         }
 
-        return capacityMap;
+        return capacityList;
     }
+
 
     getLeastUsedWarehouse(startDate, endDate) {
         if (startDate > endDate) {
@@ -100,4 +116,5 @@ class WarehouseStorageService {
 
         return leastUsed[1] === Infinity ? -1 : leastUsed[0];
     }
+
 }
