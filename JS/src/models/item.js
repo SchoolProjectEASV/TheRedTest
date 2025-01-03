@@ -8,5 +8,12 @@ class Item {
         this.startDate = new Date(startDate);
         this.endDate = new Date(endDate);
         this.isActive = isActive;
+        this.volume = this.calculateVolume();
+    }
+
+    calculateVolume() {
+        return this.itemHeight * this.itemWidth * this.itemLength;
     }
 }
+
+module.exports = Item;

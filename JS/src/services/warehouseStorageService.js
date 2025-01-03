@@ -65,11 +65,13 @@ class WarehouseStorageService {
         return fullyUtilizedDates;
     }
 
-
     calculateAvailableCapacity(startDate, endDate) {
         if (startDate > endDate) {
             throw new Error("The start date cannot be later than the end date");
         }
+
+        startDate.setHours(0, 0, 0, 0);
+        endDate.setHours(0, 0, 0, 0);
 
         const totalCapacity = this.warehouses.reduce((sum, warehouse) =>
             sum + WarehouseExtensions.getWarehouseVolume(warehouse), 0);
@@ -83,7 +85,9 @@ class WarehouseStorageService {
                 .reduce((sum, item) => sum + WarehouseExtensions.getItemVolume(item), 0);
 
             const availableCapacity = totalCapacity - totalVolumeForDay;
-            const dateString = day.toISOString().split('T')[0];
+            const dateString = day.toISOString().split('T')[0]; // Format to YYYY-MM-DD
+
+            console.log(`Processing ${dateString} - Available Capacity: ${availableCapacity}`);
             capacityList.push({ date: dateString, capacity: availableCapacity });
         }
 
@@ -118,3 +122,5 @@ class WarehouseStorageService {
     }
 
 }
+module.exports = WarehouseStorageService;
+

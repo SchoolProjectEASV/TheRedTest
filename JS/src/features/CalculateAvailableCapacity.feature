@@ -1,11 +1,9 @@
 Feature: CalculateAvailableCapacity - Boundary Tests
 
-  #------------------------------------------
   # Scenario 1: Same start/end date
-  #------------------------------------------
   Scenario: Single-day range
-    Given I have "1" warehouse with total volume "100.0"
-    And warehouse usage on "2025-01-10" is "20.0"
+    Given I have 1 warehouse with total volume 100.0 for available capacity
+    And warehouse usage on "2025-01-10" is 20.0
     When I call CalculateAvailableCapacity from "2025-01-10" to "2025-01-10"
     Then the available capacities should be:
       | 2025-01-10 | 80.0 |

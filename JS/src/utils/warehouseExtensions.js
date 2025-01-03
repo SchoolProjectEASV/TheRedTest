@@ -1,16 +1,16 @@
 class WarehouseExtensions {
-    // Calculate the volume of a warehouse
     static getWarehouseVolume(warehouse) {
-        const { height, width, length } = warehouse.maxCapacity;
+        if (warehouse.maxCapacity) {
+            return warehouse.maxCapacity;
+        }
+        const { height, width, length } = warehouse;
         return height * width * length;
     }
 
-    // Calculate the volume of an item
     static getItemVolume(item) {
         return item.itemHeight * item.itemWidth * item.itemLength;
     }
 
-    // Get the total occupied volume in a warehouse on a specific day
     static getVolumeOccupiedOnDay(warehouse, day) {
         return warehouse.items
             .filter(item =>
