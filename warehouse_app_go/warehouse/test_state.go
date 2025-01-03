@@ -1,7 +1,6 @@
 package warehouse
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 	"testing"
@@ -74,6 +73,14 @@ func (tc *TestState) CreateWarehousesWithVolume(count int, volume float64) {
 		}
 		tc.service.Warehouses = append(tc.service.Warehouses, wh)
 	}
+}
+
+func (tc *TestState) GetAllWarehouseItems() []Item {
+	var allItems []Item
+	for _, wh := range tc.service.Warehouses {
+		allItems = append(allItems, wh.Items...)
+	}
+	return allItems
 }
 
 func (tc *TestState) ApplyUsageToWarehouses(usage map[time.Time]float64) {
@@ -182,17 +189,10 @@ func parseFloat(value string) float64 {
 	return val
 }
 
-func parseDimensionsTable(table *godog.Table) (*ThreeDRoom, error) {
-	if len(table.Rows) != 2 {
-		return nil, fmt.Errorf("dimensions table should have exactly 2 rows (header and values), got %d", len(table.Rows))
-	}
+func parseDimensionsTable(table *godog.Table) *ThreeDRoom {
 
 	headerRow := table.Rows[0]
 	valueRow := table.Rows[1]
-
-	if len(headerRow.Cells) != 3 || len(valueRow.Cells) != 3 {
-		return nil, fmt.Errorf("dimensions table should have exactly 3 columns, got %d", len(headerRow.Cells))
-	}
 
 	// Create a map of header names to values
 	values := make(map[string]string)
@@ -201,24 +201,66 @@ func parseDimensionsTable(table *godog.Table) (*ThreeDRoom, error) {
 	}
 
 	// Parse each dimension
-	height, err := strconv.ParseFloat(values["height"], 64)
-	if err != nil {
-		return nil, fmt.Errorf("invalid height value: %s", values["height"])
-	}
+	height := parseFloat(values["height"])
 
-	width, err := strconv.ParseFloat(values["width"], 64)
-	if err != nil {
-		return nil, fmt.Errorf("invalid width value: %s", values["width"])
-	}
+	width := parseFloat(values["width"])
 
-	length, err := strconv.ParseFloat(values["length"], 64)
-	if err != nil {
-		return nil, fmt.Errorf("invalid length value: %s", values["length"])
-	}
+	length := parseFloat(values["length"])
 
 	return &ThreeDRoom{
 		Height: height,
 		Width:  width,
 		Length: length,
-	}, nil
+	}
+}
+
+func tableToDateSlice(t require.TestingT, table *godog.Table) []time.Time {
+	var dates []time.Time
+	for _, row := range table.Rows[1:] {
+		if len(row.Cells) > 0 {
+			dates = append(dates, parseDate(t, row.Cells[0].Value))
+		}
+	}
+	return dates
+}
+
+func (tc *TestState) CreateWarehousesFromTable(table *godog.Table) error {
+	warehouses := make([]Warehouse, len(table.Rows)-1)
+
+	// Process each row (skip header)
+	for i, row := range table.Rows[1:] {
+		id, _ := strconv.Atoi(row.Cells[0].Value)
+		volume, _ := strconv.ParseFloat(row.Cells[1].Value, 64)
+		usage, _ := strconv.ParseFloat(row.Cells[2].Value, 64)
+
+		warehouses[i] = Warehouse{
+			Id: id,
+			MaxCapacity: ThreeDRoom{
+				Height: volume,
+				Width:  1,
+				Length: 1,
+			},
+		}
+
+		if usage > 0 {
+			warehouses[i].Items = []Item{{
+				ItemId:     1,
+				ItemName:   "GeneratedUsage",
+				ItemHeight: usage,
+				ItemWidth:  1,
+				ItemLength: 1,
+				StartDate:  makeDate("2025-01-10"),
+				EndDate:    makeDate("2025-01-10"),
+				IsActive:   true,
+			}}
+		}
+	}
+
+	tc.service.Warehouses = warehouses
+	return nil
+}
+
+func makeDate(dateStr string) time.Time {
+	date, _ := time.Parse("2006-01-02", dateStr)
+	return date
 }

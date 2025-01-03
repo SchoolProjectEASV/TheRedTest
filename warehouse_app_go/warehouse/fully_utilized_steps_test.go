@@ -9,19 +9,37 @@ import (
 )
 
 func initGetFullyUtilizedDatesSteps(ctx *godog.ScenarioContext) {
+	// WHEN
 	ctx.Step(`^I call GetFullyUtilizedDates from "([^"]*)" to "([^"]*)"$`, iCallGetFullyUtilizedDatesFromTo)
+
+	// THEN
 	ctx.Step(`^the fully utilized dates should be:$`, theFullyUtilizedDatesShouldBe)
+
+	// GIVEN
+	ctx.Step(`^warehouse usage on "([^"]*)" is (\d+\.?\d*)$`, warehouseUsageOnDateIs)
+}
+
+// ----------------------------------------------------------------
+// GIVEN Step
+// ----------------------------------------------------------------
+
+func warehouseUsageOnDateIs(_ context.Context, dateStr string, usage float64) error {
+	if tc.usageMap == nil {
+		tc.usageMap = make(map[time.Time]float64)
+	}
+
+	date := parseDate(tc.t, dateStr)
+	tc.usageMap[date] = usage
+	return nil
 }
 
 // ----------------------------------------------------------------
 // WHEN Step
 // ----------------------------------------------------------------
 
-func iCallGetFullyUtilizedDatesFromTo(ctx context.Context, startStr, endStr string) error {
-	t := godog.T(ctx)
-
-	startDate := parseDate(t, startStr)
-	endDate := parseDate(t, endStr)
+func iCallGetFullyUtilizedDatesFromTo(_ context.Context, startStr, endStr string) error {
+	startDate := parseDate(tc.t, startStr)
+	endDate := parseDate(tc.t, endStr)
 
 	tc.ApplyUsageToWarehouses(tc.usageMap)
 
@@ -33,20 +51,10 @@ func iCallGetFullyUtilizedDatesFromTo(ctx context.Context, startStr, endStr stri
 // THEN Step
 // ----------------------------------------------------------------
 
-func theFullyUtilizedDatesShouldBe(ctx context.Context, table *godog.Table) (context.Context, error) {
-	t := godog.T(ctx)
+func theFullyUtilizedDatesShouldBe(_ context.Context, table *godog.Table) error {
+	assert.NoError(tc.t, tc.fullyUtilizedDatesErr, "unexpected error getting fully utilized dates")
 
-	// Check for errors
-	assert.NoError(t, tc.fullyUtilizedDatesErr, "unexpected error getting fully utilized dates")
-
-	// Get dates from table
-	expectedDates := make([]time.Time, 0)
-	for _, row := range table.Rows[1:] {
-		if len(row.Cells) > 0 {
-			expectedDates = append(expectedDates, parseDate(t, row.Cells[0].Value))
-		}
-	}
-
-	compareDates(t, expectedDates, tc.fullyUtilizedDatesResult)
-	return ctx, nil
+	expectedDates := tableToDateSlice(tc.t, table)
+	compareDates(tc.t, expectedDates, tc.fullyUtilizedDatesResult)
+	return nil
 }

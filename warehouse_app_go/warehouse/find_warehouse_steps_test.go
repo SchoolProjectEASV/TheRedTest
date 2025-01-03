@@ -7,13 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// Define a struct to match the table structure
-type Dimensions struct {
-	Height float64
-	Width  float64
-	Length float64
-}
-
 func initFindAvailableWarehouseSteps(ctx *godog.ScenarioContext) {
 	// GIVEN
 	ctx.Given(`^today is "([^"]*)"$`, todayIs)
@@ -47,9 +40,7 @@ func theWarehouseUsageIsEmptyOnAllDays(ctx context.Context) {
 	t := godog.T(ctx)
 	tc.ClearAllWarehousesUsage()
 
-	for _, wh := range tc.service.Warehouses {
-		assert.Empty(t, wh.Items, "warehouse %d should have no items", wh.Id)
-	}
+	assert.Empty(t, tc.GetAllWarehouseItems(), "warehouses should have no items")
 }
 
 // -------------------
@@ -62,10 +53,7 @@ func iCallFindAvailableWarehouseFromToWithDimensions(ctx context.Context, startS
 	startDate := parseDate(t, startStr)
 	endDate := parseDate(t, endStr)
 
-	dims, err := parseDimensionsTable(table)
-	if err != nil {
-		return err
-	}
+	dims := parseDimensionsTable(table)
 
 	tc.searchResult, tc.searchError = tc.service.FindAvailableWarehouse(
 		startDate,
