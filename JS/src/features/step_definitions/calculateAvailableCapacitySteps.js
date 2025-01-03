@@ -7,10 +7,11 @@ let service;
 let result;
 let error;
 
-Given(/I have (\d+) warehouse with total volume (\d+\.\d+) for available capacity/, function (count, volume) {
+Given(/I have (\d+) warehouse/, function (count) {
+    // Create the warehouse with a default volume if none is specified
     const warehouses = Array.from({ length: parseInt(count, 10) }, (_, i) => ({
         id: i + 1,
-        maxCapacity: parseFloat(volume),
+        maxCapacity: 100.0,  // Default volume for the warehouse
         items: [],
         getWarehouseVolume() {
             return this.maxCapacity;
@@ -21,6 +22,7 @@ Given(/I have (\d+) warehouse with total volume (\d+\.\d+) for available capacit
                 .reduce((sum, item) => sum + item.volume, 0);
         },
     }));
+
     service = new WarehouseStorageService(warehouses);
 });
 
@@ -38,7 +40,6 @@ Given('warehouse usage on {string} is {float}', function (date, usage) {
     ));
 });
 
-
 When('I call CalculateAvailableCapacity from {string} to {string}', function (startDate, endDate) {
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -47,6 +48,10 @@ When('I call CalculateAvailableCapacity from {string} to {string}', function (st
     end.setHours(0, 0, 0, 0);
 
     try {
+        if (start > end) {
+            throw new Error("the start date cannot be later than the end date");
+        }
+
         result = service.calculateAvailableCapacity(start, end);
     } catch (err) {
         error = err.message;
@@ -60,8 +65,8 @@ Then('the available capacities should be:', function (dataTable) {
     }));
 
     const transformedResult = Object.entries(result || {}).map(([date, capacity]) => ({
-        date: date,
-        capacity: capacity,
+        date,
+        capacity,
     }));
 
     console.log('Expected:', expected);
@@ -69,8 +74,6 @@ Then('the available capacities should be:', function (dataTable) {
 
     assert.deepStrictEqual(transformedResult, expected);
 });
-
-
 
 Then('an error should be returned with message {string}', function (expectedMessage) {
     assert.strictEqual(error, expectedMessage);

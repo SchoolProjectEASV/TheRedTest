@@ -75,7 +75,7 @@ class WarehouseStorageService {
     // CalculateAvailableCapacity
     calculateAvailableCapacity(startDate, endDate) {
         if (this.warehouses.length === 0) {
-            throw new Error("No warehouses available");
+            throw new Error("no warehouses available");
         }
     
         if (startDate > endDate) {
