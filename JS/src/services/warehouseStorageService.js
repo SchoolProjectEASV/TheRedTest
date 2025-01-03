@@ -3,104 +3,106 @@ class WarehouseStorageService {
         this.warehouses = warehouses;
     }
 
+    // FindAvailableWarehouse
     findAvailableWarehouse(startDate, endDate, requiredHeight, requiredWidth, requiredLength) {
-        if (startDate <= new Date() || startDate > endDate) {
-            throw new Error("The start date cannot be in the past or later than the end date");
+        if (this.warehouses.length === 0) {
+            throw new Error("No warehouses available");
         }
 
         if (requiredHeight <= 0 || requiredWidth <= 0 || requiredLength <= 0) {
             throw new Error("The 3D model has invalid dimensions (zero or negative)");
         }
 
+        if (startDate > endDate) {
+            throw new Error("Start date cannot be later than end date");
+        }
+
+        if (startDate < new Date()) {
+            throw new Error("Start date cannot be in the past");
+        }
+
         const requiredVolume = requiredHeight * requiredWidth * requiredLength;
 
         for (const warehouse of this.warehouses) {
-            const warehouseVolume = WarehouseExtensions.getWarehouseVolume(warehouse);
+            const warehouseVolume = warehouse.getWarehouseVolume();
             let canAccommodate = true;
 
             for (let day = new Date(startDate); day <= endDate; day.setDate(day.getDate() + 1)) {
-                const occupiedVolume = WarehouseExtensions.getVolumeOccupiedOnDay(warehouse, day);
+                const occupiedVolume = warehouse.getVolumeOccupiedOnDay(day);
                 if (occupiedVolume + requiredVolume > warehouseVolume) {
                     canAccommodate = false;
-                    break;
+                    throw new Error("Required volume cannot be accommodated within the specified dates");
                 }
             }
 
-            if (canAccommodate) return warehouse.id;
+            if (canAccommodate) {
+                return warehouse.id;
+            }
         }
 
         return -1;
     }
 
-
+    // GetFullyUtilizedDates
     getFullyUtilizedDates(startDate, endDate) {
-        if (startDate.getTime() > endDate.getTime()) {
-            throw new Error("The start date cannot be later than the end date");
-        }
-
         if (this.warehouses.length === 0) {
             throw new Error("No warehouses available");
         }
 
-        const totalCapacity = this.warehouses.reduce((sum, warehouse) =>
-            sum + WarehouseExtensions.getWarehouseVolume(warehouse), 0);
-
-        if (totalCapacity <= 0) {
-            throw new Error("Invalid warehouse configuration: total capacity cannot be zero or negative");
+        if (startDate > endDate) {
+            throw new Error("The start date cannot be later than the end date");
         }
 
-        const allItems = this.warehouses.flatMap(warehouse => warehouse.items.filter(item => item.isActive));
         const fullyUtilizedDates = [];
+        const totalCapacity = this.warehouses.reduce((sum, warehouse) => sum + warehouse.getWarehouseVolume(), 0);
 
         for (let day = new Date(startDate); day <= endDate; day.setDate(day.getDate() + 1)) {
-            const totalVolumeForDay = allItems
-                .filter(item => day >= item.startDate && day <= item.endDate)
-                .reduce((sum, item) => sum + WarehouseExtensions.getItemVolume(item), 0);
+            const totalVolumeForDay = this.warehouses.reduce((sum, warehouse) =>
+                sum + warehouse.getVolumeOccupiedOnDay(day), 0
+            );
 
             if (totalVolumeForDay >= totalCapacity) {
-                fullyUtilizedDates.push(new Date(day));
+                fullyUtilizedDates.push(new Date(day)); // Ensure dates are added as new instances
             }
         }
 
         return fullyUtilizedDates;
     }
 
+    // CalculateAvailableCapacity
     calculateAvailableCapacity(startDate, endDate) {
+        if (this.warehouses.length === 0) {
+            throw new Error("No warehouses available");
+        }
+
         if (startDate > endDate) {
             throw new Error("The start date cannot be later than the end date");
         }
 
-        startDate.setHours(0, 0, 0, 0);
-        endDate.setHours(0, 0, 0, 0);
+        const totalCapacity = this.warehouses.reduce((sum, warehouse) => sum + warehouse.getWarehouseVolume(), 0);
+        const capacityMap = {};
 
-        const totalCapacity = this.warehouses.reduce((sum, warehouse) =>
-            sum + WarehouseExtensions.getWarehouseVolume(warehouse), 0);
+        for (let day = new Date(startDate); day <= endDate; day = new Date(day.setDate(day.getDate() + 1))) {
+            const totalVolumeForDay = this.warehouses.reduce((sum, warehouse) =>
+                sum + warehouse.getVolumeOccupiedOnDay(day), 0
+            );
 
-        const allItems = this.warehouses.flatMap(warehouse => warehouse.items.filter(item => item.isActive));
-        const capacityList = [];
-
-        for (let day = new Date(startDate); day <= endDate; day = new Date(day.getTime() + 86400000)) {
-            const totalVolumeForDay = allItems
-                .filter(item => day >= item.startDate && day <= item.endDate)
-                .reduce((sum, item) => sum + WarehouseExtensions.getItemVolume(item), 0);
-
-            const availableCapacity = totalCapacity - totalVolumeForDay;
-            const dateString = day.toISOString().split('T')[0]; // Format to YYYY-MM-DD
-
-            console.log(`Processing ${dateString} - Available Capacity: ${availableCapacity}`);
-            capacityList.push({ date: dateString, capacity: availableCapacity });
+            capacityMap[day.toISOString().split('T')[0]] = totalCapacity - totalVolumeForDay;
         }
 
-        return capacityList;
+        return capacityMap;
     }
 
 
+    // GetLeastUsedWarehouse
     getLeastUsedWarehouse(startDate, endDate) {
+        if (this.warehouses.length === 0) {
+            throw new Error("No warehouses available");
+        }
+
         if (startDate > endDate) {
             throw new Error("The start date cannot be later than the end date");
         }
-
-        if (!this.warehouses.length) return -1;
 
         const usageMap = new Map();
 
@@ -108,19 +110,28 @@ class WarehouseStorageService {
             let totalVolumeDays = 0;
 
             for (let day = new Date(startDate); day <= endDate; day.setDate(day.getDate() + 1)) {
-                const occupiedVolume = WarehouseExtensions.getVolumeOccupiedOnDay(warehouse, day);
-                totalVolumeDays += occupiedVolume;
+                totalVolumeDays += warehouse.getVolumeOccupiedOnDay(day);
             }
 
             usageMap.set(warehouse.id, totalVolumeDays);
         }
 
-        const leastUsed = [...usageMap.entries()].reduce((least, current) =>
-            current[1] < least[1] ? current : least, [null, Infinity]);
+        let leastUsedWarehouseId = -1;
+        let minUsage = Number.MAX_SAFE_INTEGER;
 
-        return leastUsed[1] === Infinity ? -1 : leastUsed[0];
+        for (const [id, usage] of usageMap) {
+            if (usage < minUsage) {
+                minUsage = usage;
+                leastUsedWarehouseId = id;
+            }
+        }
+
+        if (minUsage === 0) {
+            return -1;
+        }
+
+        return leastUsedWarehouseId;
     }
-
 }
-module.exports = WarehouseStorageService;
 
+module.exports = WarehouseStorageService;

@@ -8,11 +8,18 @@ let result;
 let error;
 
 Given(/I have (\d+) warehouse with total volume (\d+\.\d+) for available capacity/, function (count, volume) {
-    console.log(`Creating ${count} warehouse with total volume ${volume} for available capacity`);
-    const warehouses = Array.from({ length: count }, (_, i) => ({
+    const warehouses = Array.from({ length: parseInt(count, 10) }, (_, i) => ({
         id: i + 1,
-        maxCapacity: volume,
+        maxCapacity: parseFloat(volume),
         items: [],
+        getWarehouseVolume() {
+            return this.maxCapacity;
+        },
+        getVolumeOccupiedOnDay(date) {
+            return this.items
+                .filter(item => item.startDate <= date && item.endDate >= date)
+                .reduce((sum, item) => sum + item.volume, 0);
+        },
     }));
     service = new WarehouseStorageService(warehouses);
 });
@@ -51,8 +58,15 @@ Then('the available capacities should be:', function (dataTable) {
         date: row['Date'],
         capacity: parseFloat(row['Capacity']),
     }));
-    assert.deepStrictEqual(result, expected);
+
+    const transformedResult = Object.entries(result).map(([date, capacity]) => ({
+        date,
+        capacity,
+    }));
+
+    assert.deepStrictEqual(transformedResult, expected);
 });
+
 
 Then('an error should be returned with message {string}', function (expectedMessage) {
     assert.strictEqual(error, expectedMessage);
