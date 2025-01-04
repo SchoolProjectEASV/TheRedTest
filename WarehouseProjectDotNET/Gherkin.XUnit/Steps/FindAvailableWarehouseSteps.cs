@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 using Gherkin.Ast;
+using System.Globalization;
 
 [FeatureFile("./Features/FindAvailableWarehouse.feature")]
 public sealed class FindAvailableWarehouse : Xunit.Gherkin.Quick.Feature
@@ -70,9 +71,9 @@ public sealed class FindAvailableWarehouse : Xunit.Gherkin.Quick.Feature
     {
         var dimensions = new ThreeDRoom
         {
-            Height = float.Parse(dataTable.Rows.ElementAt(1).Cells.ElementAt(0).Value),
-            Width = float.Parse(dataTable.Rows.ElementAt(1).Cells.ElementAt(1).Value),
-            Length = float.Parse(dataTable.Rows.ElementAt(1).Cells.ElementAt(2).Value)
+            Height = float.Parse(dataTable.Rows.ElementAt(1).Cells.ElementAt(0).Value, CultureInfo.InvariantCulture),
+            Width = float.Parse(dataTable.Rows.ElementAt(1).Cells.ElementAt(1).Value, CultureInfo.InvariantCulture),
+            Length = float.Parse(dataTable.Rows.ElementAt(1).Cells.ElementAt(2).Value, CultureInfo.InvariantCulture)
         };
 
         try
