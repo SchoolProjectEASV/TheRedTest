@@ -4,54 +4,77 @@
     "elements": [
       {
         "description": "",
-        "id": "calculateavailablecapacity---boundary-tests;single-day-range",
+        "id": "calculateavailablecapacity;single-day-range",
         "keyword": "Scenario",
-        "line": 4,
+        "line": 3,
         "name": "Single-day range",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 5,
-            "name": "I have 1 warehouse with total volume 100.0 for available capacity",
-            "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:10"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 1155100
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "And ",
             "line": 6,
-            "name": "warehouse usage on \"2025-01-10\" is 20.0",
+            "name": "I have 1 warehouse with total volume 100.0",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:28"
+              "location": "src\\features\\step_definitions\\sharedSteps.js:30"
             },
             "result": {
               "status": "passed",
-              "duration": 1357500
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "When ",
-            "line": 7,
-            "name": "I call CalculateAvailableCapacity from \"2025-01-10\" to \"2025-01-10\"",
-            "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:42"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 264400
+              "duration": 1106899
             }
           },
           {
             "arguments": [
               {
                 "rows": [
+                  {
+                    "cells": [
+                      "date",
+                      "usage"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "2025-01-10",
+                      "20.0"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "And ",
+            "line": 8,
+            "name": "warehouse usage is:",
+            "match": {
+              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:6"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 648099
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 11,
+            "name": "I call CalculateAvailableCapacity from \"2025-01-10\" to \"2025-01-10\"",
+            "match": {
+              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 469599
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "date",
+                      "capacity"
+                    ]
+                  },
                   {
                     "cells": [
                       "2025-01-10",
@@ -62,14 +85,14 @@
               }
             ],
             "keyword": "Then ",
-            "line": 8,
+            "line": 12,
             "name": "the available capacities should be:",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:56"
+              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:34"
             },
             "result": {
               "status": "passed",
-              "duration": 1926400
+              "duration": 648799
             }
           }
         ],
@@ -78,45 +101,48 @@
       },
       {
         "description": "",
-        "id": "calculateavailablecapacity---boundary-tests;start-date-after-end-date",
+        "id": "calculateavailablecapacity;start-date-after-end-date",
         "keyword": "Scenario",
-        "line": 14,
+        "line": 16,
         "name": "Start date after end date",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 15,
-            "name": "I have \"1\" warehouse",
+            "line": 18,
+            "name": "I have 1 default warehouse",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:61"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 161400
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 16,
+            "line": 22,
             "name": "I call CalculateAvailableCapacity from \"2025-01-12\" to \"2025-01-11\"",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:42"
+              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:23"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 87100
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 17,
+            "line": 23,
             "name": "an error should be returned with message \"the start date cannot be later than the end date\"",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:75"
+              "location": "src\\features\\step_definitions\\sharedSteps.js:22"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 127399
             }
           }
         ],
@@ -125,45 +151,48 @@
       },
       {
         "description": "",
-        "id": "calculateavailablecapacity---boundary-tests;empty-warehouse-list",
+        "id": "calculateavailablecapacity;empty-warehouse-list",
         "keyword": "Scenario",
-        "line": 22,
+        "line": 25,
         "name": "Empty warehouse list",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 23,
-            "name": "I have \"0\" warehouses",
+            "line": 26,
+            "name": "I have 0 warehouses",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:45"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 109899
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 24,
+            "line": 27,
             "name": "I call CalculateAvailableCapacity from \"2025-01-10\" to \"2025-01-11\"",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:42"
+              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:23"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 116500
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 25,
+            "line": 28,
             "name": "an error should be returned with message \"no warehouses available\"",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:75"
+              "location": "src\\features\\step_definitions\\sharedSteps.js:22"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 112300
             }
           }
         ],
@@ -172,7 +201,7 @@
       },
       {
         "description": "",
-        "id": "calculateavailablecapacity---boundary-tests;100%-usage",
+        "id": "calculateavailablecapacity;100%-usage",
         "keyword": "Scenario",
         "line": 30,
         "name": "100% usage",
@@ -181,39 +210,68 @@
             "arguments": [],
             "keyword": "Given ",
             "line": 31,
-            "name": "I have \"1\" warehouse with total volume \"100.0\"",
-            "result": {
-              "status": "undefined",
-              "duration": 0
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "And ",
-            "line": 32,
-            "name": "warehouse usage on \"2025-01-10\" is \"100.0\"",
-            "result": {
-              "status": "undefined",
-              "duration": 0
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "When ",
-            "line": 33,
-            "name": "I call CalculateAvailableCapacity from \"2025-01-10\" to \"2025-01-10\"",
+            "name": "I have 1 warehouse with total volume 100.0",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:42"
+              "location": "src\\features\\step_definitions\\sharedSteps.js:30"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 135600
             }
           },
           {
             "arguments": [
               {
                 "rows": [
+                  {
+                    "cells": [
+                      "date",
+                      "usage"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "2025-01-10",
+                      "100.0"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "And ",
+            "line": 32,
+            "name": "warehouse usage is:",
+            "match": {
+              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:6"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 74600
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 35,
+            "name": "I call CalculateAvailableCapacity from \"2025-01-10\" to \"2025-01-10\"",
+            "match": {
+              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:23"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 84499
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "date",
+                      "capacity"
+                    ]
+                  },
                   {
                     "cells": [
                       "2025-01-10",
@@ -224,14 +282,14 @@
               }
             ],
             "keyword": "Then ",
-            "line": 34,
+            "line": 36,
             "name": "the available capacities should be:",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:56"
+              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:34"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 59399
             }
           }
         ],
@@ -239,10 +297,10 @@
         "type": "scenario"
       }
     ],
-    "id": "calculateavailablecapacity---boundary-tests",
+    "id": "calculateavailablecapacity",
     "line": 1,
     "keyword": "Feature",
-    "name": "CalculateAvailableCapacity - Boundary Tests",
+    "name": "CalculateAvailableCapacity",
     "tags": [],
     "uri": "src\\features\\CalculateAvailableCapacity.feature"
   },
@@ -251,65 +309,93 @@
     "elements": [
       {
         "description": "",
-        "id": "findavailablewarehouse---boundary-tests;start-date-==-end-date",
+        "id": "findavailablewarehouse;start-date-==-end-date",
         "keyword": "Scenario",
-        "line": 6,
+        "line": 3,
         "name": "Start Date == End Date",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 7,
+            "line": 4,
             "name": "today is \"2025-01-09\"",
             "match": {
-              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:8"
+              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:7"
             },
             "result": {
               "status": "passed",
-              "duration": 84799
+              "duration": 70800
             }
           },
           {
             "arguments": [],
-            "keyword": "And ",
-            "line": 8,
-            "name": "I have \"1\" warehouse with total volume \"1.0\"",
+            "keyword": "Given ",
+            "line": 6,
+            "name": "I have 1 warehouse with total volume 1.0",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:30"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 48000
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 9,
+            "line": 7,
             "name": "the warehouse usage is empty on all days",
+            "match": {
+              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:12"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 93900
             }
           },
           {
-            "arguments": [],
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "height",
+                      "width",
+                      "length"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "1.0",
+                      "1.0",
+                      "1.0"
+                    ]
+                  }
+                ]
+              }
+            ],
             "keyword": "When ",
-            "line": 10,
-            "name": "I call FindAvailableWarehouse from \"2025-01-10\" to \"2025-01-10\" with dimensions \"1.0,1.0,1.0\"",
+            "line": 8,
+            "name": "I call FindAvailableWarehouse from \"2025-01-10\" to \"2025-01-10\" with dimensions:",
             "match": {
               "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:21"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 202299
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
             "line": 11,
-            "name": "I should receive warehouse ID \"1\"",
+            "name": "I should receive warehouse ID 1",
+            "match": {
+              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:58"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 61099
             }
           }
         ],
@@ -318,68 +404,93 @@
       },
       {
         "description": "",
-        "id": "findavailablewarehouse---boundary-tests;invalid-date-range-(start-after-end)",
+        "id": "findavailablewarehouse;invalid-date-range-(start-after-end)",
         "keyword": "Scenario",
-        "line": 16,
+        "line": 13,
         "name": "Invalid date range (start after end)",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 17,
+            "line": 14,
             "name": "today is \"2025-01-09\"",
             "match": {
-              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:8"
+              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:7"
             },
             "result": {
               "status": "passed",
-              "duration": 54999
+              "duration": 43099
             }
           },
           {
             "arguments": [],
-            "keyword": "And ",
-            "line": 18,
-            "name": "I have \"1\" warehouse with total volume \"1.0\"",
+            "keyword": "Given ",
+            "line": 15,
+            "name": "I have 1 warehouse with total volume 1.0",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:30"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 52399
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 19,
+            "line": 16,
             "name": "the warehouse usage is empty on all days",
+            "match": {
+              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:12"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 37599
             }
           },
           {
-            "arguments": [],
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "height",
+                      "width",
+                      "length"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "1.0",
+                      "1.0",
+                      "1.0"
+                    ]
+                  }
+                ]
+              }
+            ],
             "keyword": "When ",
-            "line": 20,
-            "name": "I call FindAvailableWarehouse from \"2025-01-12\" to \"2025-01-10\" with dimensions \"1.0,1.0,1.0\"",
+            "line": 17,
+            "name": "I call FindAvailableWarehouse from \"2025-01-10\" to \"2025-01-09\" with dimensions:",
             "match": {
               "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:21"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 96100
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 21,
+            "line": 20,
             "name": "an error should be returned with message \"start date cannot be later than end date\"",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:75"
+              "location": "src\\features\\step_definitions\\sharedSteps.js:22"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 48699
             }
           }
         ],
@@ -388,58 +499,80 @@
       },
       {
         "description": "",
-        "id": "findavailablewarehouse---boundary-tests;zero-or-negative-dimension",
+        "id": "findavailablewarehouse;zero-or-negative-dimension",
         "keyword": "Scenario",
-        "line": 26,
+        "line": 22,
         "name": "Zero or negative dimension",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 27,
+            "line": 23,
             "name": "today is \"2025-01-09\"",
             "match": {
-              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:8"
+              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:7"
             },
             "result": {
               "status": "passed",
-              "duration": 106400
+              "duration": 42100
             }
           },
           {
             "arguments": [],
-            "keyword": "And ",
-            "line": 28,
-            "name": "I have \"1\" warehouse with total volume \"1.0\"",
+            "keyword": "Given ",
+            "line": 24,
+            "name": "I have 1 warehouse with total volume 10.0",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:30"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 47599
             }
           },
           {
-            "arguments": [],
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "height",
+                      "width",
+                      "length"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "0.0",
+                      "1.0",
+                      "1.0"
+                    ]
+                  }
+                ]
+              }
+            ],
             "keyword": "When ",
-            "line": 29,
-            "name": "I call FindAvailableWarehouse from \"2024-12-23\" to \"2024-12-24\" with dimensions \"1.1,0,1.1\"",
+            "line": 25,
+            "name": "I call FindAvailableWarehouse from \"2025-01-10\" to \"2025-01-11\" with dimensions:",
             "match": {
               "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:21"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 69500
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 30,
+            "line": 28,
             "name": "an error should be returned with message \"the 3D model has invalid dimensions (zero or negative)\"",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:75"
+              "location": "src\\features\\step_definitions\\sharedSteps.js:22"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 42000
             }
           }
         ],
@@ -448,65 +581,93 @@
       },
       {
         "description": "",
-        "id": "findavailablewarehouse---boundary-tests;required-volume-==-warehouse-capacity",
+        "id": "findavailablewarehouse;required-volume-==-warehouse-capacity",
         "keyword": "Scenario",
-        "line": 35,
+        "line": 30,
         "name": "Required volume == Warehouse capacity",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 36,
+            "line": 31,
             "name": "today is \"2025-01-09\"",
             "match": {
-              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:8"
+              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:7"
             },
             "result": {
               "status": "passed",
-              "duration": 64099
+              "duration": 40299
             }
           },
           {
             "arguments": [],
-            "keyword": "And ",
-            "line": 37,
-            "name": "I have \"1\" warehouse with total volume \"10.0\"",
+            "keyword": "Given ",
+            "line": 32,
+            "name": "I have 1 warehouse with total volume 10.0",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:30"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 50000
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 38,
+            "line": 33,
             "name": "the warehouse usage is empty on all days",
+            "match": {
+              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:12"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 37399
             }
           },
           {
-            "arguments": [],
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "height",
+                      "width",
+                      "length"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "2.15",
+                      "2.15",
+                      "2.15"
+                    ]
+                  }
+                ]
+              }
+            ],
             "keyword": "When ",
-            "line": 39,
-            "name": "I call FindAvailableWarehouse from \"2024-12-23\" to \"2024-12-24\" with dimensions \"2.15,2.15,2.15\"",
+            "line": 34,
+            "name": "I call FindAvailableWarehouse from \"2025-01-10\" to \"2025-01-11\" with dimensions:",
             "match": {
               "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:21"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 65099
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 40,
-            "name": "I should receive warehouse ID \"1\"",
+            "line": 37,
+            "name": "I should receive warehouse ID 1",
+            "match": {
+              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:58"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 86600
             }
           }
         ],
@@ -515,58 +676,80 @@
       },
       {
         "description": "",
-        "id": "findavailablewarehouse---boundary-tests;empty-warehouse-list",
+        "id": "findavailablewarehouse;empty-warehouse-list",
         "keyword": "Scenario",
-        "line": 45,
+        "line": 39,
         "name": "Empty warehouse list",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 46,
+            "line": 40,
             "name": "today is \"2025-01-09\"",
             "match": {
-              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:8"
+              "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:7"
             },
             "result": {
               "status": "passed",
-              "duration": 73700
+              "duration": 47300
             }
           },
           {
             "arguments": [],
-            "keyword": "And ",
-            "line": 47,
-            "name": "I have \"0\" warehouses",
+            "keyword": "Given ",
+            "line": 41,
+            "name": "I have 0 warehouses",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:45"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 40999
             }
           },
           {
-            "arguments": [],
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "height",
+                      "width",
+                      "length"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "1.0",
+                      "1.0",
+                      "1.0"
+                    ]
+                  }
+                ]
+              }
+            ],
             "keyword": "When ",
-            "line": 48,
-            "name": "I call FindAvailableWarehouse from \"2024-12-23\" to \"2024-12-24\" with dimensions \"1.0,1.0,1.0\"",
+            "line": 42,
+            "name": "I call FindAvailableWarehouse from \"2025-01-10\" to \"2025-01-11\" with dimensions:",
             "match": {
               "location": "src\\features\\step_definitions\\findAvailableWarehouseSteps.js:21"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 117300
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 49,
+            "line": 45,
             "name": "an error should be returned with message \"no warehouses available\"",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:75"
+              "location": "src\\features\\step_definitions\\sharedSteps.js:22"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 40099
             }
           }
         ],
@@ -574,10 +757,10 @@
         "type": "scenario"
       }
     ],
-    "id": "findavailablewarehouse---boundary-tests",
+    "id": "findavailablewarehouse",
     "line": 1,
     "keyword": "Feature",
-    "name": "FindAvailableWarehouse - Boundary Tests",
+    "name": "FindAvailableWarehouse",
     "tags": [],
     "uri": "src\\features\\findAvailableWarehouse.feature"
   },
@@ -586,55 +769,71 @@
     "elements": [
       {
         "description": "",
-        "id": "getfullyutilizeddates---boundary-tests;single-day-range",
+        "id": "getfullyutilizeddates;single-day-range",
         "keyword": "Scenario",
-        "line": 6,
+        "line": 3,
         "name": "Single-day range",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 7,
-            "name": "I have \"1\" warehouse with total volume \"100.0\"",
+            "line": 4,
+            "name": "I have 1 warehouse with total volume 100.0",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:30"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 74999
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 8,
-            "name": "warehouse usage on \"2025-01-10\" is \"50.0\"",
+            "line": 5,
+            "name": "warehouse usage on \"2025-01-10\" is 50.0",
+            "match": {
+              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:6"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 88099
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 9,
+            "line": 6,
             "name": "I call GetFullyUtilizedDates from \"2025-01-10\" to \"2025-01-10\"",
             "match": {
-              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:17"
+              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:20"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 165099
             }
           },
           {
-            "arguments": [],
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "date"
+                    ]
+                  }
+                ]
+              }
+            ],
             "keyword": "Then ",
-            "line": 10,
-            "name": "the fully utilized dates should be \"[]\"",
+            "line": 7,
+            "name": "the fully utilized dates should be:",
             "match": {
-              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:25"
+              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:29"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 137300
             }
           }
         ],
@@ -643,45 +842,48 @@
       },
       {
         "description": "",
-        "id": "getfullyutilizeddates---boundary-tests;start-date-after-end-date",
+        "id": "getfullyutilizeddates;start-date-after-end-date",
         "keyword": "Scenario",
-        "line": 16,
+        "line": 10,
         "name": "Start date after end date",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 17,
-            "name": "I have \"1\" warehouse with total volume \"100.0\"",
+            "line": 11,
+            "name": "I have 1 warehouse with total volume 100.0",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:30"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 58999
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 18,
+            "line": 12,
             "name": "I call GetFullyUtilizedDates from \"2025-01-12\" to \"2025-01-11\"",
             "match": {
-              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:17"
+              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:20"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 69400
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 19,
+            "line": 13,
             "name": "an error should be returned with message \"the start date cannot be later than the end date\"",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:75"
+              "location": "src\\features\\step_definitions\\sharedSteps.js:22"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 42899
             }
           }
         ],
@@ -690,45 +892,48 @@
       },
       {
         "description": "",
-        "id": "getfullyutilizeddates---boundary-tests;no-warehouses",
+        "id": "getfullyutilizeddates;empty-warehouse-list",
         "keyword": "Scenario",
-        "line": 24,
-        "name": "No warehouses",
+        "line": 15,
+        "name": "Empty warehouse list",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 25,
-            "name": "I have \"0\" warehouses",
+            "line": 16,
+            "name": "I have 0 warehouses",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:45"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 62900
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 26,
+            "line": 17,
             "name": "I call GetFullyUtilizedDates from \"2025-01-10\" to \"2025-01-11\"",
             "match": {
-              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:17"
+              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:20"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 64199
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 27,
+            "line": 18,
             "name": "an error should be returned with message \"no warehouses available\"",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:75"
+              "location": "src\\features\\step_definitions\\sharedSteps.js:22"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 38200
             }
           }
         ],
@@ -737,65 +942,89 @@
       },
       {
         "description": "",
-        "id": "getfullyutilizeddates---boundary-tests;exactly-one-fully-utilized-day",
+        "id": "getfullyutilizeddates;exactly-one-fully-utilized-day",
         "keyword": "Scenario",
-        "line": 32,
+        "line": 20,
         "name": "Exactly one fully utilized day",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 33,
-            "name": "I have \"1\" warehouse with total volume \"100.0\"",
+            "line": 21,
+            "name": "I have 1 warehouse with total volume 100.0",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:30"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 46199
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 34,
-            "name": "warehouse usage on \"2025-01-10\" is \"100.0\"",
+            "line": 22,
+            "name": "warehouse usage on \"2025-01-10\" is 100.0",
+            "match": {
+              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:6"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 46899
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 35,
-            "name": "warehouse usage on \"2025-01-11\" is \"50.0\"",
+            "line": 23,
+            "name": "warehouse usage on \"2025-01-11\" is 50.0",
+            "match": {
+              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:6"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 51400
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 36,
+            "line": 24,
             "name": "I call GetFullyUtilizedDates from \"2025-01-10\" to \"2025-01-11\"",
             "match": {
-              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:17"
+              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:20"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 75700
             }
           },
           {
-            "arguments": [],
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "date"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "2025-01-10"
+                    ]
+                  }
+                ]
+              }
+            ],
             "keyword": "Then ",
-            "line": 37,
-            "name": "the fully utilized dates should be \"[2025-01-10]\"",
+            "line": 25,
+            "name": "the fully utilized dates should be:",
             "match": {
-              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:25"
+              "location": "src\\features\\step_definitions\\getFullyUtilizedDatesSteps.js:29"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 146299
             }
           }
         ],
@@ -803,10 +1032,10 @@
         "type": "scenario"
       }
     ],
-    "id": "getfullyutilizeddates---boundary-tests",
+    "id": "getfullyutilizeddates",
     "line": 1,
     "keyword": "Feature",
-    "name": "GetFullyUtilizedDates - Boundary Tests",
+    "name": "GetFullyUtilizedDates",
     "tags": [],
     "uri": "src\\features\\getFullyUtilizedDates.feature"
   },
@@ -815,9 +1044,9 @@
     "elements": [
       {
         "description": "",
-        "id": "getleastusedwarehouse---boundary-tests;single-day-usage",
+        "id": "getleastusedwarehouse;single-day-usage",
         "keyword": "Scenario",
-        "line": 6,
+        "line": 3,
         "name": "Single day usage",
         "steps": [
           {
@@ -826,9 +1055,9 @@
                 "rows": [
                   {
                     "cells": [
-                      "ID",
-                      "totalVolume",
-                      "usageOn2025-01-10"
+                      "id",
+                      "volume",
+                      "usage"
                     ]
                   },
                   {
@@ -849,37 +1078,40 @@
               }
             ],
             "keyword": "Given ",
-            "line": 7,
-            "name": "I have \"2\" warehouses with the following data:",
+            "line": 4,
+            "name": "I have warehouses with usage:",
+            "match": {
+              "location": "src\\features\\step_definitions\\getLeastUsedWarehouseSteps.js:6"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 137499
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 11,
+            "line": 8,
             "name": "I call GetLeastUsedWarehouse from \"2025-01-10\" to \"2025-01-10\"",
             "match": {
               "location": "src\\features\\step_definitions\\getLeastUsedWarehouseSteps.js:24"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 254000
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 12,
-            "name": "the least used warehouse should be \"2\"",
+            "line": 9,
+            "name": "the least used warehouse should be 2",
             "match": {
-              "location": "src\\features\\step_definitions\\getLeastUsedWarehouseSteps.js:32"
+              "location": "src\\features\\step_definitions\\getLeastUsedWarehouseSteps.js:33"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 69600
             }
           }
         ],
@@ -888,45 +1120,48 @@
       },
       {
         "description": "",
-        "id": "getleastusedwarehouse---boundary-tests;start-date-after-end-date",
+        "id": "getleastusedwarehouse;start-date-after-end-date",
         "keyword": "Scenario",
-        "line": 17,
+        "line": 11,
         "name": "Start date after end date",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 18,
-            "name": "I have \"1\" warehouse",
+            "line": 14,
+            "name": "I have 1 default warehouse",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:61"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 41100
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 19,
+            "line": 15,
             "name": "I call GetLeastUsedWarehouse from \"2025-01-12\" to \"2025-01-11\"",
             "match": {
               "location": "src\\features\\step_definitions\\getLeastUsedWarehouseSteps.js:24"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 60999
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 20,
+            "line": 16,
             "name": "an error should be returned with message \"the start date cannot be later than the end date\"",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:75"
+              "location": "src\\features\\step_definitions\\sharedSteps.js:22"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 57900
             }
           }
         ],
@@ -935,45 +1170,48 @@
       },
       {
         "description": "",
-        "id": "getleastusedwarehouse---boundary-tests;empty-warehouse-list",
+        "id": "getleastusedwarehouse;empty-warehouse-list",
         "keyword": "Scenario",
-        "line": 25,
+        "line": 18,
         "name": "Empty warehouse list",
         "steps": [
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 26,
-            "name": "I have \"0\" warehouses",
+            "line": 19,
+            "name": "I have 0 warehouses",
+            "match": {
+              "location": "src\\features\\step_definitions\\sharedSteps.js:45"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 34199
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 27,
+            "line": 20,
             "name": "I call GetLeastUsedWarehouse from \"2025-01-10\" to \"2025-01-11\"",
             "match": {
               "location": "src\\features\\step_definitions\\getLeastUsedWarehouseSteps.js:24"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 58800
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 28,
+            "line": 21,
             "name": "an error should be returned with message \"no warehouses available\"",
             "match": {
-              "location": "src\\features\\step_definitions\\calculateAvailableCapacitySteps.js:75"
+              "location": "src\\features\\step_definitions\\sharedSteps.js:22"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 40900
             }
           }
         ],
@@ -982,9 +1220,9 @@
       },
       {
         "description": "",
-        "id": "getleastusedwarehouse---boundary-tests;zero-usage",
+        "id": "getleastusedwarehouse;zero-usage",
         "keyword": "Scenario",
-        "line": 33,
+        "line": 23,
         "name": "Zero usage",
         "steps": [
           {
@@ -993,9 +1231,9 @@
                 "rows": [
                   {
                     "cells": [
-                      "ID",
-                      "totalVolume",
-                      "usageOn2025-01-10"
+                      "id",
+                      "volume",
+                      "usage"
                     ]
                   },
                   {
@@ -1016,44 +1254,53 @@
               }
             ],
             "keyword": "Given ",
-            "line": 34,
-            "name": "I have \"2\" warehouses with the following data:",
+            "line": 24,
+            "name": "I have warehouses with usage:",
+            "match": {
+              "location": "src\\features\\step_definitions\\getLeastUsedWarehouseSteps.js:6"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 49499
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 38,
+            "line": 28,
             "name": "I call GetLeastUsedWarehouse from \"2025-01-10\" to \"2025-01-10\"",
             "match": {
               "location": "src\\features\\step_definitions\\getLeastUsedWarehouseSteps.js:24"
             },
             "result": {
-              "status": "skipped",
-              "duration": 0
+              "status": "passed",
+              "duration": 123500
             }
           },
           {
             "arguments": [],
             "keyword": "Then ",
-            "line": 39,
-            "name": "the result should be \"-1\"",
+            "line": 29,
+            "name": "the least used warehouse should be -1",
+            "match": {
+              "location": "src\\features\\step_definitions\\getLeastUsedWarehouseSteps.js:33"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 51899
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 40,
+            "line": 30,
             "name": "no error is returned",
+            "match": {
+              "location": "src\\features\\step_definitions\\getLeastUsedWarehouseSteps.js:38"
+            },
             "result": {
-              "status": "undefined",
-              "duration": 0
+              "status": "passed",
+              "duration": 51400
             }
           }
         ],
@@ -1061,10 +1308,10 @@
         "type": "scenario"
       }
     ],
-    "id": "getleastusedwarehouse---boundary-tests",
+    "id": "getleastusedwarehouse",
     "line": 1,
     "keyword": "Feature",
-    "name": "GetLeastUsedWarehouse - Boundary Tests",
+    "name": "GetLeastUsedWarehouse",
     "tags": [],
     "uri": "src\\features\\getLeastUsedWarehouse.feature"
   }

@@ -1,74 +1,43 @@
-const { Given, When, Then } = require('@cucumber/cucumber');
+const { When, Then } = require('@cucumber/cucumber');
 const assert = require('assert');
-const WarehouseStorageService = require('../../services/warehouseStorageService');
-const Item = require('../../models/item');
 
-let service;
-let result;
-let error;
+Then('warehouse usage is:', function (dataTable) {
+  const usageData = dataTable.hashes();
+  const warehouse = this.service.warehouses[0]; 
 
-Given(/I have (\d+) warehouse/, function (count) {
-    const warehouses = Array.from({ length: parseInt(count, 10) }, (_, i) => ({
-        id: i + 1,
-        maxCapacity: 100.0,
-        items: [],
-        getWarehouseVolume() {
-            return this.maxCapacity;
-        },
-        getVolumeOccupiedOnDay(date) {
-            return this.items
-                .filter(item => item.startDate <= date && item.endDate >= date)
-                .reduce((sum, item) => sum + item.volume, 0);
-        },
-    }));
+  usageData.forEach(row => {
+    const usageDate = new Date(row.date);
+    usageDate.setHours(0, 0, 0, 0);
 
-    service = new WarehouseStorageService(warehouses);
+    warehouse.items.push({
+      startDate: usageDate,
+      endDate: usageDate,
+      volume: parseFloat(row.usage),
+    });
+  });
 });
 
-Given('warehouse usage on {string} is {float}', function (date, usage) {
-    const warehouse = service.warehouses[0];
-    warehouse.items.push(new Item(
-        warehouse.items.length + 1,
-        `Item ${warehouse.items.length + 1}`,
-        1, 1, 1,
-        new Date(date).setHours(0, 0, 0, 0),
-        new Date(date).setHours(0, 0, 0, 0),
-        usage
-    ));
-});
-
-When('I call CalculateAvailableCapacity from {string} to {string}', function (startDate, endDate) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    start.setHours(0, 0, 0, 0);
-    end.setHours(0, 0, 0, 0);
-
-    try {
-        if (start > end) {
-            throw new Error("the start date cannot be later than the end date");
-        }
-
-        result = service.calculateAvailableCapacity(start, end);
-    } catch (err) {
-        error = err.message;
-    }
+When('I call CalculateAvailableCapacity from {string} to {string}', function (startStr, endStr) {
+  try {
+    const start = new Date(startStr);
+    const end = new Date(endStr);
+    this.result = this.service.calculateAvailableCapacity(start, end);
+  } catch (err) {
+    this.error = err.message;
+  }
 });
 
 Then('the available capacities should be:', function (dataTable) {
-    const expected = dataTable.hashes().map(row => ({
-        date: row['Date'],
-        capacity: parseFloat(row['Capacity']),
-    }));
+  const expected = dataTable.hashes().map(r => ({
+    date: r.date,
+    capacity: parseFloat(r.capacity),
+  }));
 
-    const transformedResult = Object.entries(result || {}).map(([date, capacity]) => ({
-        date,
-        capacity,
-    }));
+  const capacityMap = this.result || {};
+  const actualArray = Object.entries(capacityMap).map(([date, capacity]) => ({
+    date,
+    capacity,
+  }));
 
-    assert.deepStrictEqual(transformedResult, expected);
-});
-
-Then('an error should be returned with message {string}', function (expectedMessage) {
-    assert.strictEqual(error, expectedMessage);
+  assert.deepStrictEqual(actualArray, expected);
 });
