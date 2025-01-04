@@ -13,7 +13,7 @@ import (
 // TestContext is a struct that holds scenario data for tests.
 // It's not part of the domain; it's purely for test setup.
 type TestState struct {
-	t        *testing.T // Add this field for assertions
+	t        *testing.T
 	service  WarehouseStorageService
 	usageMap map[time.Time]float64
 
@@ -123,7 +123,6 @@ func (tc *TestState) CalculateAvailableCapacityWithUsage(
 	start, end time.Time,
 	usage map[time.Time]float64,
 ) (map[time.Time]float64, error) {
-	// Internally loop to apply usage to each warehouse
 	for i := range tc.service.Warehouses {
 		w := &tc.service.Warehouses[i]
 		w.Items = nil
@@ -143,7 +142,6 @@ func (tc *TestState) CalculateAvailableCapacityWithUsage(
 	return tc.service.CalculateAvailableCapacity(start, end)
 }
 
-// Utility function to check if error exists in slice
 func findMatchingError(errors []error, msg string) bool {
 	for _, err := range errors {
 		if err != nil && strings.Contains(err.Error(), msg) {
@@ -153,7 +151,6 @@ func findMatchingError(errors []error, msg string) bool {
 	return false
 }
 
-// Parse date string in format "2006-01-02"
 func parseDate(t require.TestingT, dateStr string) time.Time {
 	date, err := time.Parse("2006-01-02", dateStr)
 	require.NoError(t, err, "invalid date format %q", dateStr)
@@ -194,13 +191,11 @@ func parseDimensionsTable(table *godog.Table) *ThreeDRoom {
 	headerRow := table.Rows[0]
 	valueRow := table.Rows[1]
 
-	// Create a map of header names to values
 	values := make(map[string]string)
 	for i, header := range headerRow.Cells {
 		values[header.Value] = valueRow.Cells[i].Value
 	}
 
-	// Parse each dimension
 	height := parseFloat(values["height"])
 
 	width := parseFloat(values["width"])
@@ -227,7 +222,6 @@ func tableToDateSlice(t require.TestingT, table *godog.Table) []time.Time {
 func (tc *TestState) CreateWarehousesFromTable(table *godog.Table) error {
 	warehouses := make([]Warehouse, len(table.Rows)-1)
 
-	// Process each row (skip header)
 	for i, row := range table.Rows[1:] {
 		id, _ := strconv.Atoi(row.Cells[0].Value)
 		volume, _ := strconv.ParseFloat(row.Cells[1].Value, 64)

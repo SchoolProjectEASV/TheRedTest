@@ -28,7 +28,7 @@ func initCalculateCapacitySteps(ctx *godog.ScenarioContext) {
 }
 
 // ------------------------------------------------------------------
-// GIVEN Steps
+// GIVEN Steps (Arrange)
 // ------------------------------------------------------------------
 
 func iHaveWarehousesWithTotalVolume(count int, volume float64) error {
@@ -47,7 +47,7 @@ func warehouseUsageIs(_ context.Context, table *godog.Table) error {
 }
 
 // ------------------------------------------------------------------
-// WHEN Step
+// WHEN Step (Act)
 // ------------------------------------------------------------------
 
 func iCallCalculateAvailableCapacity(startStr, endStr string) error {
@@ -63,7 +63,7 @@ func iCallCalculateAvailableCapacity(startStr, endStr string) error {
 }
 
 // ------------------------------------------------------------------
-// THEN Steps
+// THEN Steps (Assert)
 // ------------------------------------------------------------------
 
 func theAvailableCapacitiesShouldBe(_ context.Context, table *godog.Table) error {

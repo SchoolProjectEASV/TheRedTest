@@ -19,7 +19,6 @@ var opts = godog.Options{
 }
 
 func TestMain(m *testing.M) {
-	// Store the testing.T instance
 	t := &testing.T{}
 	testT = t
 
@@ -41,7 +40,6 @@ func InitializeTestSuite(ctx *godog.TestSuiteContext) {
 
 func InitializeScenario(ctx *godog.ScenarioContext) {
 	ctx.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
-		// Pass testT to NewTestContext
 		tc = NewTestContext(testT)
 		return ctx, nil
 	})

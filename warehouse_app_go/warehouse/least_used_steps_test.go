@@ -21,9 +21,17 @@ func initGetLeastUsedWarehouseSteps(ctx *godog.ScenarioContext) {
 	ctx.Then(`^no error is returned$`, noErrorIsReturned)
 }
 
+// ------------------------------------------------------------------
+// GIVEN Steps (Arrange)
+// ------------------------------------------------------------------
+
 func iHaveWarehousesWithUsage(_ context.Context, table *godog.Table) error {
 	return tc.CreateWarehousesFromTable(table)
 }
+
+// ------------------------------------------------------------------
+// WHEN Step (Act)
+// ------------------------------------------------------------------
 
 func iCallGetLeastUsedWarehouse(_ context.Context, startStr, endStr string) error {
 	startDate := makeDate(startStr)
@@ -32,6 +40,10 @@ func iCallGetLeastUsedWarehouse(_ context.Context, startStr, endStr string) erro
 	tc.leastUsedWarehouseResult, tc.leastUsedWarehouseErr = tc.service.GetLeastUsedWarehouse(startDate, endDate)
 	return nil
 }
+
+// ------------------------------------------------------------------
+// THEN Steps (Assert)
+// ------------------------------------------------------------------
 
 func theLeastUsedWarehouseShouldBe(_ context.Context, expectedID int) error {
 	assert.NoError(tc.t, tc.leastUsedWarehouseErr)

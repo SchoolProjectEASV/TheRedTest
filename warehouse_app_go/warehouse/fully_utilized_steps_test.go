@@ -20,7 +20,7 @@ func initGetFullyUtilizedDatesSteps(ctx *godog.ScenarioContext) {
 }
 
 // ----------------------------------------------------------------
-// GIVEN Step
+// GIVEN Step (Arrange)
 // ----------------------------------------------------------------
 
 func warehouseUsageOnDateIs(_ context.Context, dateStr string, usage float64) error {
@@ -34,7 +34,7 @@ func warehouseUsageOnDateIs(_ context.Context, dateStr string, usage float64) er
 }
 
 // ----------------------------------------------------------------
-// WHEN Step
+// WHEN Step (Act)
 // ----------------------------------------------------------------
 
 func iCallGetFullyUtilizedDatesFromTo(_ context.Context, startStr, endStr string) error {
@@ -48,7 +48,7 @@ func iCallGetFullyUtilizedDatesFromTo(_ context.Context, startStr, endStr string
 }
 
 // ----------------------------------------------------------------
-// THEN Step
+// THEN Step (Assert)
 // ----------------------------------------------------------------
 
 func theFullyUtilizedDatesShouldBe(_ context.Context, table *godog.Table) error {

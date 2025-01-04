@@ -24,7 +24,7 @@ func initFindAvailableWarehouseSteps(ctx *godog.ScenarioContext) {
 }
 
 // -------------------
-// GIVEN Steps
+// GIVEN Steps (Arrange)
 // -------------------
 
 func todayIs(ctx context.Context, dateStr string) {
@@ -44,7 +44,7 @@ func theWarehouseUsageIsEmptyOnAllDays(ctx context.Context) {
 }
 
 // -------------------
-// WHEN Step
+// WHEN Step (Act)
 // -------------------
 
 func iCallFindAvailableWarehouseFromToWithDimensions(ctx context.Context, startStr, endStr string, table *godog.Table) error {
@@ -66,7 +66,7 @@ func iCallFindAvailableWarehouseFromToWithDimensions(ctx context.Context, startS
 }
 
 // -------------------
-// THEN Steps
+// THEN Steps (Assert)
 // -------------------
 
 func iShouldReceiveWarehouseID(ctx context.Context, expectedID int) {
