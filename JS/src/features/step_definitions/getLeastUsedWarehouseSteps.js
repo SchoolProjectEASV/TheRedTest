@@ -5,7 +5,7 @@ let service;
 let result;
 let error;
 
-Given('I have {int} warehouses with the following data:', function (dataTable) {
+Given('I have {int} warehouses with and the following data:', function (dataTable) {
     const warehouses = dataTable.hashes().map(row => ({
         id: parseInt(row['ID']),
         totalVolume: parseFloat(row['totalVolume']),

@@ -8,10 +8,9 @@ let result;
 let error;
 
 Given(/I have (\d+) warehouse/, function (count) {
-    // Create the warehouse with a default volume if none is specified
     const warehouses = Array.from({ length: parseInt(count, 10) }, (_, i) => ({
         id: i + 1,
-        maxCapacity: 100.0,  // Default volume for the warehouse
+        maxCapacity: 100.0,
         items: [],
         getWarehouseVolume() {
             return this.maxCapacity;
@@ -26,9 +25,7 @@ Given(/I have (\d+) warehouse/, function (count) {
     service = new WarehouseStorageService(warehouses);
 });
 
-
 Given('warehouse usage on {string} is {float}', function (date, usage) {
-    console.log(`Setting warehouse usage on ${date} to ${usage}`);
     const warehouse = service.warehouses[0];
     warehouse.items.push(new Item(
         warehouse.items.length + 1,
@@ -68,9 +65,6 @@ Then('the available capacities should be:', function (dataTable) {
         date,
         capacity,
     }));
-
-    console.log('Expected:', expected);
-    console.log('Actual:', transformedResult);
 
     assert.deepStrictEqual(transformedResult, expected);
 });
