@@ -1,10 +1,12 @@
-package warehouse
+package godogs
 
 import (
 	"strconv"
 	"strings"
 	"testing"
 	"time"
+
+	"warehouse_app_go/warehouse"
 
 	"github.com/cucumber/godog"
 	"github.com/stretchr/testify/require"
@@ -14,7 +16,7 @@ import (
 // It's not part of the domain; it's purely for test setup.
 type TestState struct {
 	t        *testing.T
-	service  WarehouseStorageService
+	service  warehouse.WarehouseStorageService
 	usageMap map[time.Time]float64
 
 	calculateCapacityErr  error
@@ -33,15 +35,15 @@ func NewTestContext(t *testing.T) *TestState {
 	return &TestState{
 		t:        t,
 		usageMap: make(map[time.Time]float64),
-		service:  WarehouseStorageService{},
+		service:  warehouse.WarehouseStorageService{},
 	}
 }
 
 func (tc *TestState) CreateWarehouses(count int, volume float64) {
 	for i := 1; i <= count; i++ {
-		w := Warehouse{
+		w := warehouse.Warehouse{
 			Id: i,
-			MaxCapacity: ThreeDRoom{
+			MaxCapacity: warehouse.ThreeDRoom{
 				Height: volume,
 				Width:  1,
 				Length: 1,
@@ -63,9 +65,9 @@ func (tc *TestState) SetUsage(day time.Time, usageVal float64) {
 
 func (tc *TestState) CreateWarehousesWithVolume(count int, volume float64) {
 	for i := 1; i <= count; i++ {
-		wh := Warehouse{
+		wh := warehouse.Warehouse{
 			Id: i,
-			MaxCapacity: ThreeDRoom{
+			MaxCapacity: warehouse.ThreeDRoom{
 				Height: volume,
 				Width:  1,
 				Length: 1,
@@ -75,8 +77,8 @@ func (tc *TestState) CreateWarehousesWithVolume(count int, volume float64) {
 	}
 }
 
-func (tc *TestState) GetAllWarehouseItems() []Item {
-	var allItems []Item
+func (tc *TestState) GetAllWarehouseItems() []warehouse.Item {
+	var allItems []warehouse.Item
 	for _, wh := range tc.service.Warehouses {
 		allItems = append(allItems, wh.Items...)
 	}
@@ -88,7 +90,7 @@ func (tc *TestState) ApplyUsageToWarehouses(usage map[time.Time]float64) {
 		wh := &tc.service.Warehouses[i]
 		wh.Items = nil
 		for day, usageVal := range usage {
-			wh.Items = append(wh.Items, Item{
+			wh.Items = append(wh.Items, warehouse.Item{
 				ItemId:     1,
 				ItemName:   "GeneratedUsage",
 				ItemHeight: usageVal,
@@ -105,7 +107,7 @@ func (tc *TestState) ApplyUsageToWarehouses(usage map[time.Time]float64) {
 func (tc *TestState) ApplyUsageMap(usageMap map[time.Time]float64) {
 	for i := range tc.service.Warehouses {
 		for day, usageVal := range usageMap {
-			tc.service.Warehouses[i].Items = append(tc.service.Warehouses[i].Items, Item{
+			tc.service.Warehouses[i].Items = append(tc.service.Warehouses[i].Items, warehouse.Item{
 				ItemId:     1,
 				ItemName:   "GeneratedUsage",
 				ItemHeight: usageVal,
@@ -127,7 +129,7 @@ func (tc *TestState) CalculateAvailableCapacityWithUsage(
 		w := &tc.service.Warehouses[i]
 		w.Items = nil
 		for day, usageVal := range usage {
-			w.Items = append(w.Items, Item{
+			w.Items = append(w.Items, warehouse.Item{
 				ItemId:     1,
 				ItemName:   "GeneratedUsage",
 				ItemHeight: usageVal,
@@ -167,7 +169,7 @@ func compareDates(t require.TestingT, expected, actual []time.Time) {
 	}
 }
 
-func (tc *TestState) Service() WarehouseStorageService {
+func (tc *TestState) Service() warehouse.WarehouseStorageService {
 	return tc.service
 }
 
@@ -186,7 +188,7 @@ func parseFloat(value string) float64 {
 	return val
 }
 
-func parseDimensionsTable(table *godog.Table) *ThreeDRoom {
+func parseDimensionsTable(table *godog.Table) *warehouse.ThreeDRoom {
 
 	headerRow := table.Rows[0]
 	valueRow := table.Rows[1]
@@ -202,7 +204,7 @@ func parseDimensionsTable(table *godog.Table) *ThreeDRoom {
 
 	length := parseFloat(values["length"])
 
-	return &ThreeDRoom{
+	return &warehouse.ThreeDRoom{
 		Height: height,
 		Width:  width,
 		Length: length,
@@ -220,16 +222,16 @@ func tableToDateSlice(t require.TestingT, table *godog.Table) []time.Time {
 }
 
 func (tc *TestState) CreateWarehousesFromTable(table *godog.Table) error {
-	warehouses := make([]Warehouse, len(table.Rows)-1)
+	warehouses := make([]warehouse.Warehouse, len(table.Rows)-1)
 
 	for i, row := range table.Rows[1:] {
 		id, _ := strconv.Atoi(row.Cells[0].Value)
 		volume, _ := strconv.ParseFloat(row.Cells[1].Value, 64)
 		usage, _ := strconv.ParseFloat(row.Cells[2].Value, 64)
 
-		warehouses[i] = Warehouse{
+		warehouses[i] = warehouse.Warehouse{
 			Id: id,
-			MaxCapacity: ThreeDRoom{
+			MaxCapacity: warehouse.ThreeDRoom{
 				Height: volume,
 				Width:  1,
 				Length: 1,
@@ -237,7 +239,7 @@ func (tc *TestState) CreateWarehousesFromTable(table *godog.Table) error {
 		}
 
 		if usage > 0 {
-			warehouses[i].Items = []Item{{
+			warehouses[i].Items = []warehouse.Item{{
 				ItemId:     1,
 				ItemName:   "GeneratedUsage",
 				ItemHeight: usage,

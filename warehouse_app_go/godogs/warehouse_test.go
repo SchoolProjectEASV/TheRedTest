@@ -1,4 +1,4 @@
-package warehouse
+package godogs
 
 import (
 	"context"
@@ -15,7 +15,7 @@ var testT *testing.T
 var opts = godog.Options{
 	Output: colors.Colored(os.Stdout),
 	Format: "pretty",
-	Paths:  []string{"../features"},
+	Paths:  []string{"features"},
 }
 
 func TestMain(m *testing.M) {

@@ -1,4 +1,4 @@
-package warehouse
+package godogs
 
 import (
 	"context"
