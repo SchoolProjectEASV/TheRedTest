@@ -48,7 +48,6 @@ When('I call FindAvailableWarehouse from {string} to {string} with dimensions {s
   }
 });
 
-// "Then I should receive warehouse ID N"
 Then('I should receive warehouse ID {int}', function (expectedId) {
   assert.strictEqual(this.result, expectedId);
 });
