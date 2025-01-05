@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WarehouseProject.Models;
 
 namespace WarehouseProject.Services
@@ -11,9 +9,9 @@ namespace WarehouseProject.Services
     {
         private readonly IEnumerable<Warehouse> Warehouses;
 
-        public WarehouseStorageService(IEnumerable<Warehouse> Warehouses)
+        public WarehouseStorageService(IEnumerable<Warehouse> warehouses)
         {
-            this.Warehouses = Warehouses;
+            this.Warehouses = warehouses ?? throw new ArgumentNullException(nameof(warehouses));
         }
 
         /// <summary>
@@ -25,20 +23,29 @@ namespace WarehouseProject.Services
         /// </summary>
         public int FindAvailableWarehouse(DateTime startDate, DateTime endDate, double requiredHeight, double requiredWidth, double requiredLength)
         {
-            if (startDate <= DateTime.Today || startDate > endDate)
-                throw new ArgumentException("The start date cannot be in the past or later than the end date.");
+            if (!Warehouses.Any())
+                throw new InvalidOperationException("no warehouses available");
+
+            if (requiredHeight <= 0 || requiredWidth <= 0 || requiredLength <= 0)
+                throw new ArgumentException("the 3d model has invalid dimensions (zero or negative)");
+
+            if (startDate > endDate)
+                throw new ArgumentException("start date cannot be later than end date");
+
+            if (startDate <= DateTime.Today)
+                throw new ArgumentException("start date cannot be later than end date");
 
             double requiredVolume = requiredHeight * requiredWidth * requiredLength;
 
-            foreach (var Warehouse in Warehouses)
+            foreach (var warehouse in Warehouses)
             {
-                double WarehouseVolume = Warehouse.GetWarehouseVolume();
+                double warehouseVolume = warehouse.GetWarehouseVolume();
                 bool canAccommodate = true;
 
                 for (DateTime day = startDate; day <= endDate; day = day.AddDays(1))
                 {
-                    double occupiedVolume = Warehouse.GetVolumeOccupiedOnDay(day);
-                    if (occupiedVolume + requiredVolume > WarehouseVolume)
+                    double occupiedVolume = warehouse.GetVolumeOccupiedOnDay(day);
+                    if (occupiedVolume + requiredVolume > warehouseVolume)
                     {
                         canAccommodate = false;
                         break;
@@ -46,7 +53,7 @@ namespace WarehouseProject.Services
                 }
 
                 if (canAccommodate)
-                    return Warehouse.Id;
+                    return warehouse.Id;
             }
 
             return -1;
@@ -59,23 +66,18 @@ namespace WarehouseProject.Services
         /// </summary>
         public List<DateTime> GetFullyUtilizedDates(DateTime startDate, DateTime endDate)
         {
+            if (!Warehouses.Any())
+                throw new InvalidOperationException("no warehouses available");
+
             if (startDate > endDate)
-                throw new ArgumentException("The start date cannot be later than the end date.");
+                throw new ArgumentException("start date cannot be later than end date");
 
-            List<DateTime> fullyUtilizedDates = new List<DateTime>();
-
+            var fullyUtilizedDates = new List<DateTime>();
             double totalCapacity = Warehouses.Sum(w => w.GetWarehouseVolume());
-
-            // Get all items from all Warehouses (assume we just flatten)
-            var allItems = Warehouses.SelectMany(w => w.Items).Where(i => i.IsActive).ToList();
 
             for (DateTime day = startDate; day <= endDate; day = day.AddDays(1))
             {
-                // Sum volume of all items that are active on this day
-                double totalVolumeForDay = allItems
-                    .Where(i => day >= i.StartDate && day <= i.EndDate)
-                    .Sum(i => i.GetItemVolume());
-
+                double totalVolumeForDay = Warehouses.Sum(w => w.GetVolumeOccupiedOnDay(day));
                 if (totalVolumeForDay >= totalCapacity)
                 {
                     fullyUtilizedDates.Add(day);
@@ -90,23 +92,22 @@ namespace WarehouseProject.Services
         /// Returns a dictionary keyed by date, indicating how much volume is free on that date.
         /// If a day is overbooked (total item volume > total capacity), it will show a negative value.
         /// </summary>
+        /// 
         public Dictionary<DateTime, double> CalculateAvailableCapacity(DateTime startDate, DateTime endDate)
         {
+            if (!Warehouses.Any())
+                throw new InvalidOperationException("no warehouses available");
+
             if (startDate > endDate)
-                throw new ArgumentException("The start date cannot be later than the end date.");
+                throw new ArgumentException("start date cannot be later than end date");
 
             double totalCapacity = Warehouses.Sum(w => w.GetWarehouseVolume());
-            var allItems = Warehouses.SelectMany(w => w.Items).Where(i => i.IsActive).ToList();
-            Dictionary<DateTime, double> capacityMap = new Dictionary<DateTime, double>();
+            var capacityMap = new Dictionary<DateTime, double>();
 
             for (DateTime day = startDate; day <= endDate; day = day.AddDays(1))
             {
-                double totalVolumeForDay = allItems
-                    .Where(i => day >= i.StartDate && day <= i.EndDate)
-                    .Sum(i => i.GetItemVolume());
-
-                double available = totalCapacity - totalVolumeForDay;
-                capacityMap[day] = available;
+                double totalVolumeForDay = Warehouses.Sum(w => w.GetVolumeOccupiedOnDay(day));
+                capacityMap[day] = totalCapacity - totalVolumeForDay;
             }
 
             return capacityMap;
@@ -122,33 +123,29 @@ namespace WarehouseProject.Services
         /// </summary>
         public int GetLeastUsedWarehouse(DateTime startDate, DateTime endDate)
         {
-            if (startDate > endDate)
-                throw new ArgumentException("The start date cannot be later than the end date.");
-
             if (!Warehouses.Any())
-                return -1;
+                throw new InvalidOperationException("no warehouses available");
+
+            if (startDate > endDate)
+                throw new ArgumentException("start date cannot be later than end date");
 
             var usageMap = Warehouses.ToDictionary(w => w.Id, w => 0.0);
 
-            // For each Warehouse, sum the volume of items day by day
-            foreach (var Warehouse in Warehouses)
+            foreach (var warehouse in Warehouses)
             {
                 double totalVolumeDays = 0.0;
 
                 for (DateTime day = startDate; day <= endDate; day = day.AddDays(1))
                 {
-                    double occupiedVolume = Warehouse.GetVolumeOccupiedOnDay(day);
-                    totalVolumeDays += occupiedVolume;
+                    totalVolumeDays += warehouse.GetVolumeOccupiedOnDay(day);
                 }
 
-                usageMap[Warehouse.Id] = totalVolumeDays;
+                usageMap[warehouse.Id] = totalVolumeDays;
             }
 
-            // If no usage at all, return -1
             if (usageMap.Values.All(v => v == 0.0))
                 return -1;
 
-            // Return the Warehouse with the smallest usage value
             int leastUsedWarehouseId = usageMap.OrderBy(kvp => kvp.Value).First().Key;
             return leastUsedWarehouseId;
         }

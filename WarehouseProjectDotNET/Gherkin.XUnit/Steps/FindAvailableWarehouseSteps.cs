@@ -1,24 +1,24 @@
 ﻿using WarehouseProject.Models;
-using WarehouseProject.Repository;
 using Xunit.Gherkin.Quick;
 using System;
 using System.Collections.Generic;
 using Xunit;
 using Gherkin.Ast;
 using System.Globalization;
+using WarehouseProject.Services;
 
 [FeatureFile("./Features/FindAvailableWarehouse.feature")]
 public sealed class FindAvailableWarehouse : Xunit.Gherkin.Quick.Feature
 {
     private readonly List<Warehouse> _warehouses = new();
-    private readonly WarehouseRepository _repository;
     private int? _resultWarehouseId;
     private Exception _exception;
     private DateTime _today;
+    private readonly WarehouseStorageService _service;
 
     public FindAvailableWarehouse()
     {
-        _repository = new WarehouseRepository(_warehouses);
+        _service = new WarehouseStorageService(_warehouses);
     }
 
     [Given(@"today is ""(.*)""")]
@@ -78,11 +78,7 @@ public sealed class FindAvailableWarehouse : Xunit.Gherkin.Quick.Feature
 
         try
         {
-            _resultWarehouseId = _repository.FindAvailableWarehouse(
-                DateTime.Parse(start),
-                DateTime.Parse(end),
-                dimensions
-            );
+            _resultWarehouseId = _service.FindAvailableWarehouse(DateTime.Parse(start), DateTime.Parse(end), dimensions.Height, dimensions.Width, dimensions.Length);
         }
         catch (Exception ex)
         {

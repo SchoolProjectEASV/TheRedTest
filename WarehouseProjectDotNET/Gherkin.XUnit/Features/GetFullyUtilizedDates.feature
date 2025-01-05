@@ -16,7 +16,7 @@ Feature: GetFullyUtilizedDates
   Scenario: Start date after end date
     Given I have 1 warehouse with total volume 100.0
     When I call GetFullyUtilizedDates from "2025-01-12" to "2025-01-11"
-    Then an error should be returned with message "the start date cannot be later than the end date"
+    Then an error should be returned with message "start date cannot be later than end date"
 
   #------------------------------------------
   # Scenario 3: No warehouses

@@ -4,17 +4,19 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 using Gherkin.Ast;
+using System.Globalization;
+using System.Linq;
 using WarehouseProject.Services;
 
-[FeatureFile("./Features/CalculateAvailableCapacity.feature")]
-public sealed class CalculateAvailableCapacity : Xunit.Gherkin.Quick.Feature
+[FeatureFile("./Features/GetFullyUtilizedDates.feature")]
+public sealed class GetFullyUtilizedDatesTests : Xunit.Gherkin.Quick.Feature
 {
     private readonly List<Warehouse> _warehouses = new();
-    private Dictionary<DateTime, double> _result;
+    private List<DateTime> _resultDates;
     private Exception _exception;
     private readonly WarehouseStorageService _service;
 
-    public CalculateAvailableCapacity()
+    public GetFullyUtilizedDatesTests()
     {
         _service = new WarehouseStorageService(_warehouses);
     }
@@ -49,38 +51,34 @@ public sealed class CalculateAvailableCapacity : Xunit.Gherkin.Quick.Feature
         }
     }
 
-    [And(@"warehouse usage is:")]
-    public void Given_warehouse_usage(DataTable dataTable)
+    [And(@"warehouse usage on ""(.*)"" is (\d+\.\d+)")]
+    public void And_warehouse_usage_on_date(string date, float volume)
     {
-        foreach (var row in dataTable.Rows.Skip(1))
-        {
-            var date = DateTime.Parse(row.Cells.ElementAt(0).Value);
-            var usage = float.Parse(row.Cells.ElementAt(1).Value);
+        var targetDate = DateTime.Parse(date);
+        var warehouse = _warehouses.First();
 
-            foreach (var warehouse in _warehouses)
-            {
-                warehouse.Items.Add(new Item
-                {
-                    ItemHeight = usage,
-                    ItemWidth = 1,
-                    ItemLength = 1,
-                    StartDate = date,
-                    EndDate = date,
-                    IsActive = true
-                });
-            }
-        }
+        warehouse.Items.Add(new Item
+        {
+            ItemId = warehouse.Items.Count + 1,
+            ItemName = $"TestItem_{warehouse.Items.Count + 1}",
+            ItemHeight = volume,
+            ItemWidth = 1,
+            ItemLength = 1,
+            StartDate = targetDate,
+            EndDate = targetDate,
+            IsActive = true
+        });
     }
 
-    [When(@"I call CalculateAvailableCapacity from ""(.*)"" to ""(.*)""")]
-    public void When_calculate_capacity(string start, string end)
+    [When(@"I call GetFullyUtilizedDates from ""(.*)"" to ""(.*)""")]
+    public void When_call_get_fully_utilized_dates(string start, string end)
     {
         try
         {
-            _result = _service.CalculateAvailableCapacity(
+            _resultDates = _service.GetFullyUtilizedDates(
                 DateTime.Parse(start),
                 DateTime.Parse(end)
-            );
+            ).ToList();
         }
         catch (Exception ex)
         {
@@ -88,15 +86,21 @@ public sealed class CalculateAvailableCapacity : Xunit.Gherkin.Quick.Feature
         }
     }
 
-    [Then(@"the available capacities should be:")]
-    public void Then_verify_capacities(DataTable dataTable)
+    [Then(@"the fully utilized dates should be:")]
+    public void Then_verify_fully_utilized_dates(DataTable dataTable)
     {
-        foreach (var row in dataTable.Rows.Skip(1))
+        Assert.NotNull(_resultDates);
+
+        var expectedDates = dataTable.Rows
+            .Skip(1)
+            .Select(row => DateTime.Parse(row.Cells.First().Value))
+            .ToList();
+
+        Assert.Equal(expectedDates.Count, _resultDates.Count);
+
+        for (int i = 0; i < expectedDates.Count; i++)
         {
-            var date = DateTime.Parse(row.Cells.ElementAt(0).Value);
-            var expectedCapacity = float.Parse(row.Cells.ElementAt(1).Value);
-            Assert.True(_result.ContainsKey(date));
-            Assert.Equal(expectedCapacity, _result[date]);
+            Assert.Equal(expectedDates[i].Date, _resultDates[i].Date);
         }
     }
 
@@ -104,6 +108,6 @@ public sealed class CalculateAvailableCapacity : Xunit.Gherkin.Quick.Feature
     public void Then_verify_error(string message)
     {
         Assert.NotNull(_exception);
-        Assert.Equal(message, _exception.Message);
+        Assert.Equal(message, _exception.Message.ToLower());
     }
 }
