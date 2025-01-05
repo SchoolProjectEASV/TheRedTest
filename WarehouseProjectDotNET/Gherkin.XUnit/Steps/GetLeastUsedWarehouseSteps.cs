@@ -52,10 +52,7 @@ public sealed class GetLeastUsedWarehouseTests : Xunit.Gherkin.Quick.Feature
                 Id = id,
                 MaxCapacity = new ThreeDRoom { Height = volume, Width = 1, Length = 1 },
                 Items = new List<Item>()
-            };
-
-            if (usage > 0)
-            {
+            };         
                 warehouse.Items.Add(new Item
                 {
                     ItemId = 1,
@@ -67,7 +64,6 @@ public sealed class GetLeastUsedWarehouseTests : Xunit.Gherkin.Quick.Feature
                     EndDate = DateTime.Parse("2025-01-10"),
                     IsActive = true
                 });
-            }
 
             _warehouses.Add(warehouse);
         }
