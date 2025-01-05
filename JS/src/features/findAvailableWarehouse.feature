@@ -2,7 +2,6 @@ Feature: FindAvailableWarehouse
 
 Scenario: Start Date == End Date
   Given today is "2025-01-09"
-  # uses the step: I have {int} warehouse(s) with total volume {float}
   Given I have 1 warehouse with total volume 1.0
   And the warehouse usage is empty on all days
   When I call FindAvailableWarehouse from "2025-01-10" to "2025-01-10" with dimensions:
