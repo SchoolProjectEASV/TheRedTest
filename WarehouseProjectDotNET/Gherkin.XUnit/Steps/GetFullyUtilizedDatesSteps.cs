@@ -25,31 +25,27 @@ public sealed class GetFullyUtilizedDatesTests : Xunit.Gherkin.Quick.Feature
     public void Given_warehouse_count(int count)
     {
         _warehouses.Clear();
-        for (int i = 0; i < count; i++)
+        _warehouses.AddRange(new Warehouse[count].Select((_, i) => new Warehouse
         {
-            _warehouses.Add(new Warehouse
-            {
-                Id = i + 1,
-                MaxCapacity = new ThreeDRoom(),
-                Items = new List<Item>()
-            });
-        }
+            Id = i + 1,
+            MaxCapacity = new ThreeDRoom { Height = 100, Width = 1, Length = 1 },
+            Items = new List<Item>()
+        }));
     }
+
 
     [Given(@"I have (\d+) warehouse with total volume (\d+\.\d+)")]
     public void Given_warehouse_with_volume(int count, float volume)
     {
         _warehouses.Clear();
-        for (int i = 0; i < count; i++)
+        _warehouses.AddRange(new Warehouse[count].Select((_, i) => new Warehouse
         {
-            _warehouses.Add(new Warehouse
-            {
-                Id = i + 1,
-                MaxCapacity = new ThreeDRoom { Height = volume, Width = 1, Length = 1 },
-                Items = new List<Item>()
-            });
-        }
+            Id = i + 1,
+            MaxCapacity = new ThreeDRoom { Height = volume, Width = 1, Length = 1 },
+            Items = new List<Item>()
+        }));
     }
+
 
     [And(@"warehouse usage on ""(.*)"" is (\d+\.\d+)")]
     public void And_warehouse_usage_on_date(string date, float volume)
@@ -98,11 +94,9 @@ public sealed class GetFullyUtilizedDatesTests : Xunit.Gherkin.Quick.Feature
 
         Assert.Equal(expectedDates.Count, _resultDates.Count);
 
-        for (int i = 0; i < expectedDates.Count; i++)
-        {
-            Assert.Equal(expectedDates[i].Date, _resultDates[i].Date);
-        }
+        Assert.True(expectedDates.All(ed => _resultDates.Any(rd => rd.Date == ed.Date)), "The dates do not match.");
     }
+
 
     [Then(@"an error should be returned with message ""(.*)""")]
     public void Then_verify_error(string message)

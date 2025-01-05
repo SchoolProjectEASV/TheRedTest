@@ -25,15 +25,12 @@ public sealed class GetLeastUsedWarehouseTests : Xunit.Gherkin.Quick.Feature
     public void Given_warehouse_count(int count)
     {
         _warehouses.Clear();
-        for (int i = 0; i < count; i++)
+        _warehouses.AddRange(new Warehouse[count].Select((_, i) => new Warehouse
         {
-            _warehouses.Add(new Warehouse
-            {
-                Id = i + 1,
-                MaxCapacity = new ThreeDRoom { Height = 100, Width = 1, Length = 1 },
-                Items = new List<Item>()
-            });
-        }
+            Id = i + 1,
+            MaxCapacity = new ThreeDRoom { Height = 100, Width = 1, Length = 1 },
+            Items = new List<Item>()
+        }));
     }
 
     [Given(@"I have warehouses with usage:")]
@@ -52,18 +49,18 @@ public sealed class GetLeastUsedWarehouseTests : Xunit.Gherkin.Quick.Feature
                 Id = id,
                 MaxCapacity = new ThreeDRoom { Height = volume, Width = 1, Length = 1 },
                 Items = new List<Item>()
-            };         
-                warehouse.Items.Add(new Item
-                {
-                    ItemId = 1,
-                    ItemName = $"TestItem_{id}",
-                    ItemHeight = usage,
-                    ItemWidth = 1,
-                    ItemLength = 1,
-                    StartDate = DateTime.Parse("2025-01-10"),
-                    EndDate = DateTime.Parse("2025-01-10"),
-                    IsActive = true
-                });
+            };
+            warehouse.Items.Add(new Item
+            {
+                ItemId = 1,
+                ItemName = $"TestItem_{id}",
+                ItemHeight = usage,
+                ItemWidth = 1,
+                ItemLength = 1,
+                StartDate = DateTime.Parse("2025-01-10"),
+                EndDate = DateTime.Parse("2025-01-10"),
+                IsActive = true
+            });
 
             _warehouses.Add(warehouse);
         }
