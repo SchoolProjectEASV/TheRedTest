@@ -1,7 +1,7 @@
 # TheRedTest
 
 ## Overview
-This project demonstrates the use of Behavior-Driven Development (BDD). The system handles key warehouse functionalities such as capacity calculation, least-used warehouse identification, and ensuring item compatibility with warehouse dimensions.
+This project demonstrates the use of Behavior-Driven Development (BDD), with the use of different cucumber inspired frameworks in different languages. The system handles key warehouse functionalities such as capacity calculation, least-used warehouse identification, and ensuring item compatibility with warehouse dimensions.
 
 ## Application Features
 The warehouse management system includes the following methods:
