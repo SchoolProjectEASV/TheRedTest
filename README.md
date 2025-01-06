@@ -15,11 +15,11 @@ This system focuses on ensuring efficient warehouse operations while validating 
 
 ## Framework used
 
-**GoDog (GoLang)**
+[**GoDog (GoLang)**](https://github.com/cucumber/godog)
 
-**Cucumber.js (JavaScript)**
+[**Cucumber.js (JavaScript)**](https://www.npmjs.com/package/@cucumber/cucumber)
 
-**XUnit.Gherkin.Quick (.NET)**
+[**XUnit.Gherkin.Quick (.NET)**](https://github.com/ttutisani/Xunit.Gherkin.Quick)
 
 ## Running the Tests
 
